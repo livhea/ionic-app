@@ -20,7 +20,11 @@ angular.module('starter.controllers', [])
 
 	$scope.showConversation = function() {
 		console.log('chats controller showConversation()');
-		window.HelpshiftPlugin.showConversation();
+		var config = {
+			"conversationPrefillText": "Hi Swapnil here, How can I of assistance ?",
+			"hideNameAndEmail": "YES"
+		};
+		window.HelpshiftPlugin.showConversation(config);
 	};
 })
 
