@@ -1,7 +1,7 @@
 {
-  "name": "health",
+  "name": "Livhea",
   "version": "1.1.1",
-  "description": "health: An Ionic project",
+  "description": "Livhea",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^2.0.4",
@@ -21,7 +21,15 @@
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
     "ionic-plugin-keyboard",
-    "helpshift-support-plugin"
+    "helpshift-support-plugin",
+    {
+      "variables": {
+        "APP_ID": "619628678217398",
+        "APP_NAME": "Livhea"
+      },
+      "locator": "cordova-plugin-facebook4",
+      "id": "cordova-plugin-facebook4"
+    }
   ],
   "cordovaPlatforms": [
     "ios",
