@@ -1,0 +1,14 @@
+<ion-view view-title="More">
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="blog in blogs" type="item-text-wrap" href="#/tab/more/{{blog.id}}">
+        <img ng-src="{{blog.face}}">
+        <div class="item-text-wrap">
+  		  {{blog.title}}
+  		</div>
+        <!-- <p>{{chat.lastText}}</p> -->
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,13 @@
+<!--
+  This template loads for the 'tab.friend-detail' state (app.js)
+  'friend' is a $scope variable created in the FriendsCtrl controller (controllers.js)
+  The FriendsCtrl pulls data from the Friends service (service.js)
+  The Friends service returns an array of friend data
+-->
+<ion-view view-title="{{blog.title}}">
+  <ion-content class="padding">
+    <img ng-src="{{blog.face}}" style="margin: 0 auto; width:100%">
+    <div ng-bind-html="thisCanBeusedInsideNgBindHtml"></div>
+
+  </ion-content>
+</ion-view>
