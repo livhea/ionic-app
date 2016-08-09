@@ -104,6 +104,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         }
     })
 
+    .state('tab.dash-addweight', {
+        url: '/dash/addweight',
+        views: {
+            'tab-dash': {
+                templateUrl: 'templates/add-weight.html',
+                controller: 'WeightCtrl'
+            }
+        }
+    })
+
+    .state('tab.dash-addbloodpressure', {
+        url: '/dash/addbloodpressure',
+        views: {
+            'tab-dash': {
+                templateUrl: 'templates/add-bloodpressure.html',
+                controller: 'BloodPressureCtrl'
+            }
+        }
+    })
+
     console.log('window.localStorage.starter_facebook_user -->', window.localStorage.starter_facebook_user);
     // if none of the above states are matched, use this as the fallback
     if(window.localStorage.starter_facebook_user) {

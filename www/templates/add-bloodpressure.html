@@ -1,0 +1,26 @@
+<!--
+  This template loads for the 'tab.friend-detail' state (app.js)
+  'friend' is a $scope variable created in the FriendsCtrl controller (controllers.js)
+  The FriendsCtrl pulls data from the Friends service (service.js)
+  The Friends service returns an array of friend data
+-->
+<ion-view view-title="Blood Pressure as on: {{date}}">
+  <ion-content>
+  	<div class="list">
+		<label class="item item-input item-stacked-label">
+		    <span class="input-label">Systolic (top number)</span>
+		    <input type="tel" placeholder="mmHg" ng-model="systolic">
+		</label>
+		<label class="item item-input item-stacked-label">
+		    <span class="input-label">Diastolic (bottom number)</span>
+		    <input type="tel" placeholder="mmHg" ng-model="diastolic">
+		</label>
+		<button class="button button-full button-positive" ng-click="saveBP()">
+  			Save
+		</button>
+	</div>
+  <!--   <img ng-src="{{blog.face}}" style="margin: 0 auto; width:100%">
+    <div ng-bind-html="thisCanBeusedInsideNgBindHtml"></div> -->
+
+  </ion-content>
+</ion-view>

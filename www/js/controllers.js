@@ -4,6 +4,54 @@ angular.module('starter.controllers', [])
 	$scope.blogs = Blogs.all();
 })
 
+.controller('WeightCtrl', function($scope, $ionicPopup) {
+	var monthNames = ["January", "February", "March", "April", "May", "June",
+  		"July", "August", "September", "October", "November", "December"
+	];
+
+	var d = new Date();
+	$scope.date = monthNames[d.getMonth()] + ' ' + d.getDay();
+	$scope.weight = null;
+	$scope.saveWeight = function() {
+		console.log('saving weight: ' , this.weight)
+		if (!isValidWeight(this.weight)) {
+			$ionicPopup.alert({
+				title: 'Incorrect value',
+			 	template: 'Please check the weight!'
+			});
+			return;
+		}
+	};
+})
+
+.controller('BloodPressureCtrl', function($scope, $ionicPopup) {
+	var monthNames = ["January", "February", "March", "April", "May", "June",
+  		"July", "August", "September", "October", "November", "December"
+	];
+
+	var d = new Date();
+	$scope.date = monthNames[d.getMonth()] + ' ' + d.getDay();
+	$scope.systolic = null;
+	$scope.diastolic = null;
+	$scope.saveBP = function() {
+		if (!isValidBP(this.systolic)) {
+			$ionicPopup.alert({
+				title: 'Incorrect value',
+			 	template: 'Please check systolic value!'
+			});
+			return;
+		}
+
+		if (!isValidBP(this.diastolic)) {
+			$ionicPopup.alert({
+				title: 'Incorrect value',
+			 	template: 'Please check diastolic value!'
+			});
+			return;
+		}
+	};
+})
+
 .controller('ChatsCtrl', function($scope) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -182,3 +230,11 @@ angular.module('starter.controllers', [])
 		});
 	};
 });
+
+function isValidBP(value) {
+  return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value > 0 && value <= 400)
+}
+
+function isValidWeight(value) {
+  return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value > 0 && value <= 1000)
+}
