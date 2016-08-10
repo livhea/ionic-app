@@ -4,7 +4,12 @@ angular.module('starter.controllers', [])
 	$scope.blogs = Blogs.all();
 })
 
-.controller('WeightCtrl', function($scope, $ionicPopup) {
+.controller('WeightCtrl', function($scope, $ionicPopup, $firebaseAuth) {
+  	$scope.$on('$ionicView.afterEnter', function(e) {
+  		console.log('AFFAF');
+  		console.log('firebase.auth().currentUser:', firebase.auth().currentUser);
+  	});
+	
 	var monthNames = ["January", "February", "March", "April", "May", "June",
   		"July", "August", "September", "October", "November", "December"
 	];
@@ -106,15 +111,47 @@ angular.module('starter.controllers', [])
 // })
 
 // https://ionicthemes.com/tutorials/about/native-facebook-login-with-ionic-framework
-.controller('LaunchController', function($scope, $state, $q, UserService, $ionicLoading, $ionicPopup) {
+.controller('LaunchController', function($scope, $state, $q, UserService, $ionicLoading, $ionicPopup, $firebaseAuth) {
+	console.log('firebase.auth().currentUser:', firebase.auth().currentUser);
   // This is the success callback from the login method
-	var fbLoginSuccess = function(response) {
-	  	if (!response.authResponse){
+	var fbLoginSuccess = function(event) {
+	  	if (!event.authResponse){
 	  		fbLoginError("Cannot find the authResponse");
 	  		return;
 	  	}
 
-	  	var authResponse = response.authResponse;
+		  if (event.authResponse) {
+		    // User is signed-in Facebook.
+		    var unsubscribe = firebase.auth().onAuthStateChanged(function(firebaseUser) {
+		    	console.log('1 firebaseUser', firebaseUser);
+		      	unsubscribe();
+		      	// Check if we are already signed-in Firebase with the correct user.
+		      	if (!isUserEqual(event.authResponse, firebaseUser)) {
+		        	// Build Firebase credential with the Facebook auth token.
+		      		var credential = firebase.auth.FacebookAuthProvider.credential(event.authResponse.accessToken);
+			        // Sign in with the credential from the Facebook user.
+			        firebase.auth().signInWithCredential(credential).catch(function(error) {
+			        	// Handle Errors here.
+			          	var errorCode = error.code;
+				        var errorMessage = error.message;
+				        // The email of the user's account used.
+				        var email = error.email;
+				        // The firebase.auth.AuthCredential type that was used.
+				        var credential = error.credential;
+				        // ...
+			        });
+		      	}
+
+		      	console.log('firebaseUser:', JSON.stringify(firebase.auth().currentUser));
+		      	// $ionicLoading.hide();
+         //    	$state.go('tab.dash');
+		    });
+		  } else {
+		    // User is signed-out of Facebook.
+		    firebase.auth().signOut();
+		  }
+
+	  	var authResponse = event.authResponse;
 
 	  	getFacebookProfileInfo(authResponse)
 	  	.then(function(profileInfo) {
@@ -185,30 +222,6 @@ angular.module('starter.controllers', [])
 				console.log('getLoginStatus', success.status);
 
 				// Check if we have our user saved
-				var user = UserService.getUser('facebook');
-				console.log('user:', JSON.stringify(user));
-
-				if(!user.userID){
-				  // user is not saved, get user profile information and save it
-					getFacebookProfileInfo(success.authResponse)
-					.then(function(profileInfo) {
-
-						// For the purpose of this example I will store user data on local storage
-						UserService.setUser({
-							authResponse: success.authResponse,
-							userID: profileInfo.id,
-							name: profileInfo.name,
-							email: profileInfo.email,
-							picture : "http://graph.facebook.com/" + success.authResponse.userID + "/picture?type=large"
-						});
-					}, function(fail){
-						// Fail get profile info
-						console.log('failed to get profile info, failure:', fail);
-						fbLoginError('local error, failed to retrieve user data');
-					});
-				}
-
-				setHelpshiftInformation(user.name, user.email);
 				$state.go('tab.dash');
 
 			} else {
@@ -237,4 +250,18 @@ function isValidBP(value) {
 
 function isValidWeight(value) {
   return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value > 0 && value <= 1000)
+}
+
+function isUserEqual(facebookAuthResponse, firebaseUser) {
+  if (firebaseUser) {
+    var providerData = firebaseUser.providerData;
+    for (var i = 0; i < providerData.length; i++) {
+      if (providerData[i].providerId === firebase.auth.FacebookAuthProvider.PROVIDER_ID &&
+          providerData[i].uid === facebookAuthResponse.userID) {
+        // We don't need to re-auth the Firebase connection.
+        return true;
+      }
+    }
+  }
+  return false;
 }

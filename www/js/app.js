@@ -5,8 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
-
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase'])
 .run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -38,6 +37,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                                         "livhea.helpshift.com", 
                                         helpshiftAppId, 
                                         helpshiftConfig);
+
+        facebookConnectPlugin.getLoginStatus(function(success) {
+            if(success.status === 'connected') {
+                console.log('CONNECTED');
+            } else {
+                console.log('NOT CONNECTED');
+            }
+        });
+
     });
 })
 
@@ -127,8 +135,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     console.log('window.localStorage.starter_facebook_user -->', window.localStorage.starter_facebook_user);
     // if none of the above states are matched, use this as the fallback
     if(window.localStorage.starter_facebook_user) {
+        console.log('111 HERERERE');
         $urlRouterProvider.otherwise('/tab/dash');
     } else {
+        console.log('222 HERERERE');
         $urlRouterProvider.otherwise('/launch');
     }
 
