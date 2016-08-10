@@ -4,7 +4,7 @@ angular.module('starter.controllers', [])
 	$scope.blogs = Blogs.all();
 })
 
-.controller('WeightCtrl', function($scope, $ionicPopup, $firebaseAuth) {
+.controller('WeightCtrl', function($scope, $ionicPopup, $state, $firebaseAuth, $ionicHistory) {
   	$scope.$on('$ionicView.afterEnter', function(e) {
   		console.log('AFFAF');
   		console.log('firebase.auth().currentUser:', firebase.auth().currentUser);
@@ -17,6 +17,7 @@ angular.module('starter.controllers', [])
 	var d = new Date();
 	$scope.date = monthNames[d.getMonth()] + ' ' + d.getDay();
 	$scope.weight = null;
+
 	$scope.saveWeight = function() {
 		console.log('saving weight: ' , this.weight)
 		if (!isValidWeight(this.weight)) {
@@ -26,10 +27,21 @@ angular.module('starter.controllers', [])
 			});
 			return;
 		}
+
+		var user = firebase.auth().currentUser;
+		// console.log('uid: ', JSON.stringify(user));
+		var data = {};
+		data[d] = {
+			weight: this.weight
+		}
+		firebase.database().ref('users/' + user.uid + '/user-weight').push(data);
+		
+		// go back to dash view
+		$ionicHistory.goBack();
 	};
 })
 
-.controller('BloodPressureCtrl', function($scope, $ionicPopup) {
+.controller('BloodPressureCtrl', function($scope, $ionicPopup, $state, $firebaseAuth, $ionicHistory) {
 	var monthNames = ["January", "February", "March", "April", "May", "June",
   		"July", "August", "September", "October", "November", "December"
 	];
@@ -54,6 +66,18 @@ angular.module('starter.controllers', [])
 			});
 			return;
 		}
+		
+		var user = firebase.auth().currentUser;
+		// console.log('uid: ', JSON.stringify(user));
+		var data = {};
+		data[d] = {
+			systolic: this.systolic,
+			diastolic: this.diastolic
+		};
+		firebase.database().ref('users/' + user.uid + '/user-bp').push(data);
+
+		// go back to dash view
+		$ionicHistory.goBack();
 	};
 })
 
