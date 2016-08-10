@@ -1,17 +1,14 @@
-<ion-view view-title="Track your Pregnancy">
+<ion-view view-title="Track your Pregnancy" >
 	<ion-content>
 		<div class="list">
 			<!-- <div class="item item-divider">
 			Candy Bars
 			</div> -->
-			<a class="item" href="#">
-					<h2>show chart here</h2>
-					<h2>show chart here</h2>
-					<h2>show chart here</h2>
-					<h2>show chart here</h2>
-					<h2>show chart here</h2>
-					<h2>show chart here</h2>
-			</a>
+			
+            	<canvas id="line" class="item chart chart-line" chart-data="data"
+			chart-labels="labels" chart-series="series" chart-options="options"
+			chart-dataset-override="datasetOverride"> 
+				</canvas>
 			<a class="item ion-ios-body-outline" ui-sref="tab.dash-addweight">
 				Add Weight
 			</a>
