@@ -11,3 +11,8 @@
     z-index: 2;
     position: relative;*/
 }
+
+.launchprofile-input {
+    text-decoration: underline;
+    border:1px solid #ff0000;
+}

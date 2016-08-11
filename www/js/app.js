@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase', 'chart.js'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase', 'chart.js', 'angularMoment'])
 .run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -62,6 +62,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         // abstract: true,
         templateUrl: 'templates/launch.html',
         controller: 'LaunchController'
+    })
+
+    .state('launchprofile', {
+        url: '/launchprofile',
+        // abstract: true,
+        templateUrl: 'templates/launchprofile.html',
+        controller: 'ProfileController'
     })
 
     // setup an abstract state for the tabs directive
@@ -141,5 +148,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         console.log('222 HERERERE');
         $urlRouterProvider.otherwise('/launch');
     }
-
+    // $urlRouterProvider.otherwise('/launchprofile');
+    // $urlRouterProvider.otherwise('/tab/dash/addweight');
 });

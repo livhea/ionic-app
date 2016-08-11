@@ -12,23 +12,32 @@
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
 
+    <script src="lib/sinch.min.js"></script>
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <script src="lib/moment/moment.js"></script>
+    <script src="lib/angular-moment/angular-moment.js"></script>
 
     <!-- Firebase & AngularFire -->
     <script src="lib/firebase/firebase.js"></script>
     <script src="lib/angularfire/dist/angularfire.min.js"></script> 
-<script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyC_0aLeNvqmR9VLRmKny66054zIlqzp9nU",
-    authDomain: "livhea-42f3e.firebaseapp.com",
-    databaseURL: "https://livhea-42f3e.firebaseio.com",
-    storageBucket: "livhea-42f3e.appspot.com",
-  };
-  firebase.initializeApp(config);
-</script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyC_0aLeNvqmR9VLRmKny66054zIlqzp9nU",
+        authDomain: "livhea-42f3e.firebaseapp.com",
+        databaseURL: "https://livhea-42f3e.firebaseio.com",
+        storageBucket: "livhea-42f3e.appspot.com",
+      };
+      firebase.initializeApp(config);
+    </script>
 
+    <script>
+      var sinchClient = new SinchClient({
+          applicationKey: 'ad134191-ae23-490b-8730-6fc9bf948d10'
+      });
+    </script>
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
 

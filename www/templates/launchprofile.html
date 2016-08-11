@@ -1,0 +1,38 @@
+<ion-view hide-nav-bar="true">
+  <ion-content class="padding">
+  <br/>
+	<span><h4>Welcome</h4> <h3>{{name}}</h3>
+  	<p>Thank for choosing Livhea. Please tell us about you, to better serve you!</p>
+
+	<div class="list">
+
+		<label class="item item-input">
+		    <span class="input-label">My age</span>
+		    <input type="tel" placeholder="age in years" ng-model="age">
+		</label>
+
+		<label class="item item-input">
+		    <span class="input-label">I am pregnant</span>
+		      <select ng-model="pregnancy_status" ng-change="pregnancyChanged()">
+		      <option value="pregnant">Yes</option>
+		      <option value="not_pregnant">No</option>
+		    </select>
+		</label>
+
+
+		<label class="item item-input">
+		    <span class="input-label">{{pregnantLabel}}</span>
+		    <input type="tel" placeholder="weeks" ng-model="week_track">
+		</label>
+
+		<label class="item item-input">
+		    <span class="input-label">My contact number</span>
+		    <input type="tel" placeholder="10 digit mobile number" ng-model="contact_number">
+		</label>
+
+		<button class="button button-full button-positive" ng-click="saveProfile()">
+  			Verify mobile number(Send OTP)
+		</button>
+	</div>
+  </ion-content>
+</ion-view>

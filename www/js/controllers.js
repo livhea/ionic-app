@@ -121,24 +121,6 @@ angular.module('starter.controllers', [])
   $scope.thisCanBeusedInsideNgBindHtml = blog.content;
 })
 
-// .controller('LaunchController', function($scope, $state) {
-
-//   $scope.loginWithFacebook = function(){
-//     console.log('loginWithFacebook');
-//     $state.go('tab.dash');
-//   };
-
-//   $scope.skipLogin = function(){
-//     console.log('skipLogin');
-//     $state.go('tab.dash');
-//   };
-
-
-//   $scope.settings = {
-//     enableFriends: true
-//   };
-// })
-
 // https://ionicthemes.com/tutorials/about/native-facebook-login-with-ionic-framework
 .controller('LaunchController', function($scope, $state, $q, UserService, $ionicLoading, $ionicPopup, $firebaseAuth) {
 	console.log('firebase.auth().currentUser:', firebase.auth().currentUser);
@@ -172,8 +154,6 @@ angular.module('starter.controllers', [])
 		      	}
 
 		      	console.log('firebaseUser:', JSON.stringify(firebase.auth().currentUser));
-		      	// $ionicLoading.hide();
-         //    	$state.go('tab.dash');
 		    });
 		  } else {
 		    // User is signed-out of Facebook.
@@ -194,9 +174,11 @@ angular.module('starter.controllers', [])
 			  	name: profileInfo.name,
 			  	email: profileInfo.email,
 			  	picture : "https://graph.facebook.com/" + authResponse.userID + "/picture?type=large"
-		  });
+		  	});
+
+	 		console.log('T!-->window.localStorage.starter_facebook_user', JSON.stringify(window.localStorage.starter_facebook_user));
 		  $ionicLoading.hide();
-		  $state.go('tab.dash');
+		  $state.go('launchprofile');
 		}, function(fail){
 		  	// Fail get profile info
 			console.log('profile info fail', fail);
@@ -210,7 +192,7 @@ angular.module('starter.controllers', [])
 
 		var alertPopup = $ionicPopup.alert({
 			title: 'Facebook Login',
-		 	template: 'Sorry, an error occurred. Please try again.'
+		 	template: JSON.stringify(error)//'Sorry, an error occurred. Please try again.'
 		});
 
 		alertPopup.then(function(res) {
@@ -251,7 +233,7 @@ angular.module('starter.controllers', [])
 				console.log('getLoginStatus', success.status);
 
 				// Check if we have our user saved
-				$state.go('tab.dash');
+				$state.go('launchprofile');
 
 			} else {
 				// If (success.status === 'not_authorized') the user is logged in to Facebook,
@@ -271,14 +253,209 @@ angular.module('starter.controllers', [])
 			}
 		});
 	};
+})
+
+.controller('ProfileController', function($scope, $state, $q, UserService, $ionicLoading, $ionicPopup, $firebaseAuth, moment) {
+	
+	var user = UserService.getUser();
+	console.log('user-->', user);
+	console.log('string user-->', JSON.stringify(user));
+	$scope.pregnantLabel = 'Pregnant for weeks';
+	$scope.pregnancy_status = 'pregnant';
+	$scope.name = user.name || 'user';
+	$scope.userOTP = {};
+	$scope.retryCount = 0;
+
+	var sendOTP = function(mobileNumber) {
+
+		if($scope.retryCount > 3) {
+			$ionicPopup.alert({
+				title: 'Excuse us',
+			 	template: 'System failed to verify your phone number multiple times. Please try again after few hours!'
+			});
+			return;
+		}
+
+		$scope.verification = sinchClient.createSmsVerification('+91'+ mobileNumber);
+		console.log('verification:', $scope.verification);
+		// to send message to the user
+		$scope.verification.initiate(function(){
+			console.log('SMS SEND SUCCESSFULLY');
+		}, function() {
+			console.log('FAILED TO SEND SMS');
+		});
+	}
+
+	var showOTPpopUp = function(scopeRef) {
+
+		if(scopeRef.retryCount > 3) {
+			$ionicPopup.alert({
+				title: 'Excuse us',
+			 	template: 'System failed to verify your phone number multiple times. Please try again after few hours!'
+			});
+			return;
+		}
+
+		// initialise with empty object
+		$scope.userOTP = {};
+
+		// popup for OTP
+		var myPopup = $ionicPopup.show({
+		    template: '<input type="tel" ng-model="userOTP.otp">',
+		    title: 'Enter Verification Code',
+		    subTitle: 'Please enter verificatoin code received via sms',
+		    scope: $scope,
+		    buttons: [
+		      	{ 
+		      		text: 'Resend OTP',
+			        onTap: function(e) {
+			        	console.log('resend sms');
+			        	sendOTP(this.contact_number);
+						var resendPopup = $ionicPopup.alert({
+							title: 'OTP send',
+						 	template: 'Verification code has been re-sent!'
+						});
+
+						resendPopup.then(function(res) {
+							showOTPpopUp(scopeRef);
+						});
+			        }
+		       	},
+		      	{
+		        	text: '<b>Verify</b>',
+		        	type: 'button-positive',
+			        onTap: function(e) {
+			          	if (!$scope.userOTP.otp) {
+			            	//don't allow the user to close unless he enters OTP
+			            	e.preventDefault();
+			          	} else {
+			            	return $scope.userOTP.otp;
+			          	}
+			        }
+		      	}
+		    ]
+        }).then(function(res) {
+			console.log('Tapped!', res);
+
+			if(!isNaN(res)) {
+				console.log('scopeRef.verification', scopeRef.verification);
+				
+				// trigger verify call with server
+				$scope.verification.verify(res, function() {
+					console.log('successfully verified phone number');
+					console.log('scopeRef.age: ', scopeRef.age);
+					console.log('scopeRef.userOTP: ', JSON.stringify(scopeRef.userOTP));
+					
+					// move to next screen
+					var data = {
+						name: user.name || '',
+						email: user.email || '',
+						picture: user.picture || '',
+						age: scopeRef.age,
+						pregnant: scopeRef.pregnancy_status,
+						contact_number: scopeRef.contact_number
+					};
+
+					var previousDate = moment().subtract($scope.week_track*7, 'days');
+					previousDate = previousDate.format('LL');
+					console.log('previousDate: ', previousDate);
+					if($scope.pregnancy_status == 'pregnant') {
+						data['pregnancy_start_date'] = previousDate;
+					} else {
+						data['expected_pregnancy_date'] = previousDate;
+					}
+
+					var firebaseUser = firebase.auth().currentUser;
+					console.log('firebaseUser:', firebaseUser);
+					firebase.database().ref('users/' + firebaseUser.uid).set(data);
+
+					// move to new state
+					$state.go('tab.dash');
+
+				}, function(){
+
+					scopeRef.retryCount++;
+					console.log('phone number not verified');
+					// show error alert and ask to verify again
+					$ionicPopup.alert({
+						title: 'OTP Error',
+					 	template: 'System failed to verify your phone number. Please try again!'
+					});
+				});
+			}
+
+        }, function(err) {
+        	console.log('Err:', err);
+			$ionicPopup.alert({
+				title: 'OTP Error',
+			 	template: 'System failed to verify your phone number. Please try again!'
+			});
+        }, function(msg) {
+        	console.log('message:', msg);
+        });
+	}
+
+	$scope.pregnancyChanged = function() {
+		console.log('checked or unchecked');
+		console.log('status:' ,this.pregnancy_status);
+		if(this.pregnancy_status == 'pregnant') {
+			$scope.pregnantLabel = 'Pregnant for weeks';
+		} else {
+			$scope.pregnantLabel = 'Planning for pregnancy in weeks';
+		}
+	};
+
+	$scope.saveProfile = function() {
+		if(!isValidAge(this.age)) {
+			$ionicPopup.alert({
+				title: 'Incorrect age',
+			 	template: 'Please check age value!'
+			});
+			return;
+		}
+
+		if(!isValidPregnancyWeek(this.week_track)) {
+			$ionicPopup.alert({
+				title: 'Incorrect weeks',
+			 	template: 'Please check weeks value!'
+			});
+			return;
+		}
+		
+		if(!isValidContactNumber(this.contact_number)) {
+			$ionicPopup.alert({
+				title: 'Incorrect contact',
+			 	template: 'Please check your mobile number!'
+			});
+			return;
+		}
+
+		// send OTP
+		sendOTP(this.contact_number);
+
+		showOTPpopUp(this);
+	};
+
 });
 
 function isValidBP(value) {
-  return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value > 0 && value <= 400)
+	return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value > 0 && value <= 400)
 }
 
 function isValidWeight(value) {
-  return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value > 0 && value <= 1000)
+	return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value > 0 && value <= 1000)
+}
+
+function isValidAge(value) {
+	return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value > 12 && value <= 70)
+}
+
+function isValidPregnancyWeek(value) {
+	return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value >= 0 && value <= 42)
+}
+
+function isValidContactNumber(value) {
+	return !isNaN(value) && (value.match(/\d/g).length===10);
 }
 
 function isUserEqual(facebookAuthResponse, firebaseUser) {
