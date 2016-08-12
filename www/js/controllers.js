@@ -86,27 +86,45 @@ angular.module('starter.controllers', [])
 	};
 })
 
-.controller('ChatsCtrl', function($scope) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  // $scope.$on('$ionicView.enter', function(e) {
-  // });
-
-  // $scope.$on('$viewContentLoaded', function() {
-  //     //call it here
-  //     window.HelpshiftPlugin.showConversation();
-  // });
-
+.controller('ChatsCtrl', function($scope, $ionicLoading, $firebaseAuth) {
 	$scope.showConversation = function() {
-		console.log('chats controller showConversation()');
+		console.log('-------> X1');
+		var customMetadata = {"usertype":"paid" , "level":"7" , "score":"12345", "HSTAGSKEY":["ios","phonegap","bug"]};
+		var config = {"enableContactUs":"AFTER_VIEWING_FAQS", "HSCUSTOMMETADATAKEY": customMetadata};
+		
+		console.log('-------> X2');
+		$ionicLoading.show({
+			template: 'Starting...'
+		});
+		console.log('-------> X3');
+
 		var config = {
-			"conversationPrefillText": "Hi Swapnil here, How can I of assistance ?",
+			"conversationPrefillText": "Connect with a pregnancy coach.",
 			"hideNameAndEmail": "YES"
 		};
-		window.HelpshiftPlugin.showConversation(config);
+
+		var userId = firebase.auth().currentUser.uid;
+		firebase.database().ref('users/' + userId).once('value', function(snapshot) {
+			console.log('A----->');
+			console.log('snapshot', JSON.stringify(snapshot.val()));
+
+			if(snapshot.val()) {
+				var customMetadata = {
+					age : snapshot.val().age,
+					pregnant : snapshot.val().pregnant,
+					contact_number : snapshot.val().contact_number,
+					pregnancy_start_date: snapshot.val().pregnancy_start_date,
+					expected_pregnancy_date: snapshot.val().expected_pregnancy_date
+				}
+
+				config["HSCUSTOMMETADATAKEY"] = customMetadata;
+			}
+
+			console.log('config', JSON.stringify(config));
+			$ionicLoading.hide();
+			window.HelpshiftPlugin.showConversation(config);
+		});
+		console.log('-------> X5');
 	};
 })
 
@@ -267,7 +285,6 @@ angular.module('starter.controllers', [])
 	$scope.retryCount = 0;
 
 	var sendOTP = function(mobileNumber) {
-
 		if($scope.retryCount > 3) {
 			$ionicPopup.alert({
 				title: 'Excuse us',
@@ -283,6 +300,10 @@ angular.module('starter.controllers', [])
 			console.log('SMS SEND SUCCESSFULLY');
 		}, function() {
 			console.log('FAILED TO SEND SMS');
+			$ionicPopup.alert({
+				title: 'Excuse us',
+			 	template: 'Failed to send SMS, please retry!'
+			});
 		});
 	}
 
@@ -307,19 +328,7 @@ angular.module('starter.controllers', [])
 		    scope: $scope,
 		    buttons: [
 		      	{ 
-		      		text: 'Resend OTP',
-			        onTap: function(e) {
-			        	console.log('resend sms');
-			        	sendOTP(this.contact_number);
-						var resendPopup = $ionicPopup.alert({
-							title: 'OTP send',
-						 	template: 'Verification code has been re-sent!'
-						});
-
-						resendPopup.then(function(res) {
-							showOTPpopUp(scopeRef);
-						});
-			        }
+		      		text: 'Cancel'
 		       	},
 		      	{
 		        	text: '<b>Verify</b>',
@@ -372,7 +381,7 @@ angular.module('starter.controllers', [])
 					// move to new state
 					$state.go('tab.dash');
 
-				}, function(){
+				}, function() {
 
 					scopeRef.retryCount++;
 					console.log('phone number not verified');
@@ -390,6 +399,7 @@ angular.module('starter.controllers', [])
 				title: 'OTP Error',
 			 	template: 'System failed to verify your phone number. Please try again!'
 			});
+			return;
         }, function(msg) {
         	console.log('message:', msg);
         });
