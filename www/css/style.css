@@ -16,3 +16,16 @@
     text-decoration: underline;
     border:1px solid #ff0000;
 }
+
+.livhea-background-color {
+    background-color: #0dbeab;
+    /*background-color: #cab27a;*/    
+}
+
+.livhea-text-color {
+    color: white;
+}
+
+.item .item-content {
+  background-color: #0dbeab !important;
+}
