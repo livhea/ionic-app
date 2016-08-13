@@ -12,16 +12,16 @@
 		</label>
 
 		<label class="item item-input">
-		    <span class="input-label">I am pregnant</span>
+		    <span class="input-label">Please select</span>
 		      <select ng-model="pregnancy_status" ng-change="pregnancyChanged()">
-		      <option value="pregnant">Yes</option>
-		      <option value="not_pregnant">No</option>
+		      <option value="trying_pregnant">I am trying to get pregnant</option>
+		      <option value="currently_pregnant">I am pregnant</option>
+		      <option value="recently_delivered">I recently delivered</option>
 		    </select>
 		</label>
 
-
-		<label class="item item-input">
-		    <span class="input-label">{{pregnantLabel}}</span>
+		<label class="item item-input" ng-hide="pregnancyWeekLabel">
+		    <span class="input-label">Pregnant for weeks</span>
 		    <input type="tel" placeholder="weeks" ng-model="week_track">
 		</label>
 

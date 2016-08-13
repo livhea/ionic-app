@@ -9,18 +9,14 @@ angular.module('starter.controllers', [])
     ];
 })
 
-.controller('WeightCtrl', function($scope, $ionicPopup, $state, $firebaseAuth, $ionicHistory) {
+.controller('WeightCtrl', function($scope, $ionicPopup, $state, $firebaseAuth, $ionicHistory, moment) {
   	$scope.$on('$ionicView.afterEnter', function(e) {
   		console.log('AFFAF');
   		console.log('firebase.auth().currentUser:', firebase.auth().currentUser);
   	});
 	
-	var monthNames = ["January", "February", "March", "April", "May", "June",
-  		"July", "August", "September", "October", "November", "December"
-	];
-
 	var d = new Date();
-	$scope.date = monthNames[d.getMonth()] + ' ' + d.getDay();
+	$scope.date = moment().format("MMM Do");
 	$scope.weight = null;
 
 	$scope.saveWeight = function() {
@@ -46,13 +42,10 @@ angular.module('starter.controllers', [])
 	};
 })
 
-.controller('BloodPressureCtrl', function($scope, $ionicPopup, $state, $firebaseAuth, $ionicHistory) {
-	var monthNames = ["January", "February", "March", "April", "May", "June",
-  		"July", "August", "September", "October", "November", "December"
-	];
-
+.controller('BloodPressureCtrl', function($scope, $ionicPopup, $state, $firebaseAuth, $ionicHistory, moment) {
+	
 	var d = new Date();
-	$scope.date = monthNames[d.getMonth()] + ' ' + d.getDay();
+	$scope.date = moment().format("MMM Do");
 	$scope.systolic = null;
 	$scope.diastolic = null;
 	$scope.saveBP = function() {
@@ -278,12 +271,12 @@ angular.module('starter.controllers', [])
 	var user = UserService.getUser();
 	console.log('user-->', user);
 	console.log('string user-->', JSON.stringify(user));
-	$scope.pregnantLabel = 'Pregnant for weeks';
-	$scope.pregnancy_status = 'pregnant';
+	$scope.pregnancy_status = 'currently_pregnant';
+	$scope.pregnancyWeekLabel = false;
 	$scope.name = user.name || 'user';
 	$scope.userOTP = {};
 	$scope.retryCount = 0;
-
+	
 	var sendOTP = function(mobileNumber) {
 		if($scope.retryCount > 3) {
 			$ionicPopup.alert({
@@ -408,10 +401,10 @@ angular.module('starter.controllers', [])
 	$scope.pregnancyChanged = function() {
 		console.log('checked or unchecked');
 		console.log('status:' ,this.pregnancy_status);
-		if(this.pregnancy_status == 'pregnant') {
-			$scope.pregnantLabel = 'Pregnant for weeks';
+		if(this.pregnancy_status == 'currently_pregnant') {
+			$scope.pregnancyWeekLabel = false;
 		} else {
-			$scope.pregnantLabel = 'Planning for pregnancy in weeks';
+			$scope.pregnancyWeekLabel = true;
 		}
 	};
 
