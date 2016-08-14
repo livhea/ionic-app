@@ -153,5 +153,5 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
         $urlRouterProvider.otherwise('/launch');
     }
     // $urlRouterProvider.otherwise('/launchprofile');
-    // $urlRouterProvider.otherwise('/tab/dash/addweight');
+    // $urlRouterProvider.otherwise('/tab/chats');
 });

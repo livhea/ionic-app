@@ -1,10 +1,42 @@
-<ion-view hide-nav-bar="true">
-  <ion-content class="padding launch">
-  </ion-content>
-  <ion-footer-bar style="background-color:#E5E7E9">
-    <h1 class="title button button-positive" ng-click="facebookSignIn()">Login With Facebook</h1>
-    <!-- <div class="buttons" ng-click="skipLogin()">
-      <button class="button">Skip</button>
-    </div> -->
-  </ion-footer-bar>
+<ion-view hide-nav-bar="true" class="launch">
+	<div style="position:relative;">
+	  	<p style="text-align:center; margin-top:20px; color:#4A4A4A; font-size:20px">
+	  		Welcome to
+	  	</p>
+	  	<p style="text-align:center; margin-top:10px">
+	  		<img src="img/launch/logo.png" style="text-align:center">
+	  	</p>
+	  	<div style="color:#4A4A4A; font-size:18px; text-align:center">
+	  		<p style="margin-bottom:15px">Connect With</p>
+	  		<p style="margin-bottom:15px">Your personalised lifestyle coaches</p>
+	  		<p style="margin-bottom:15px">Top Medical Experts</p>
+	  	</div>
+	</div>	
+	
+  	<div style="position:absolute; bottom:0; left:0; width:100%; text-align:center">
+  		<p class="title button button-positive" style="width:80%; " ng-click="facebookSignIn()">
+  			Login With Facebook
+  		</p>
+  		<p style="width:100%; font-size:smaller">
+  			 By continuing you agree to our 
+  			 <a style="text-decoration:none" onclick="window.open('http://livhea.com/terms-and-conditions', '_system', 'location=yes'); return false;" >
+
+  				terms & conditions
+  			</a>
+
+  			 and 
+  			<a style="text-decoration:none" onclick="window.open('http://livhea.com/privacy-policy', '_system', 'location=yes'); return false;">
+
+  				privacy policy
+  			</a>
+
+  		</p>
+	</div>
+  <!-- <ion-footer-bar style="background-color:red">
+    
+	    
+  </ion-footer-bar>	 -->
 </ion-view>
+
+
+<!-- <p style="text-align:center"></p> -->
