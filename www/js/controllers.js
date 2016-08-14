@@ -90,32 +90,22 @@ angular.module('starter.controllers', [])
 
 		window.localStorage.chat_use = 'started';
 		$scope.chatLabel = 'Continue Chat';
-
-		console.log('-------> X1');
-		console.log('-------> X2');
-
-		  var isIOS = ionic.Platform.isIOS();
-		  var isAndroid = ionic.Platform.isAndroid();
-
-
-
 		$ionicLoading.show({
 			template: 'Starting...'
 		});
-		console.log('-------> X3');
-
-		var config = {
-			"conversationPrefillText": "Connect with a pregnancy coach.",
-			"hideNameAndEmail": "YES"
-		};
 
 		var userId = firebase.auth().currentUser.uid;
 		firebase.database().ref('users/' + userId).once('value', function(snapshot) {
 			console.log('A----->');
 			console.log('snapshot', JSON.stringify(snapshot.val()));
 
+			var hipmobData = {
+				'title': 'Coach'
+			};
+
+			var customMetadata = {};
 			if(snapshot.val()) {
-				var customMetadata = {
+				customMetadata = {
 					age : snapshot.val().age,
 					pregnant : snapshot.val().pregnant,
 					contact_number : snapshot.val().contact_number,
@@ -123,17 +113,19 @@ angular.module('starter.controllers', [])
 					expected_pregnancy_date: snapshot.val().expected_pregnancy_date
 				}
 
-				if(isIOS) {
-					config["HelpshiftSupportCustomMetadataKey"] = customMetadata;
-				} else {
-					config["HSCUSTOMMETADATAKEY"] = customMetadata;
-				}
-				
+				hipmobData = {
+					'title': 'Coach',
+					'user': userId,
+					'name': snapshot.val().name,
+					'email': snapshot.val().email
+				};
 			}
 
-			console.log('config', JSON.stringify(config));
 			$ionicLoading.hide();
-			window.HelpshiftPlugin.showConversation(config);
+
+ 			var Hipmob = window.plugins.Hipmob;
+		    Hipmob.openChat('58699d03b20c45cca247352fbd612513', hipmobData, customMetadata);
+			console.log('config', JSON.stringify(config));
 		});
 		console.log('-------> X5');
 	};
