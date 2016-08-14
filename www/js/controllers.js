@@ -80,7 +80,17 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ChatsCtrl', function($scope, $ionicLoading, $firebaseAuth) {
+	if(window.localStorage.chat_use) {
+		$scope.chatLabel = 'Continue Chat';
+	} else {
+		$scope.chatLabel = 'Start Chat';
+	}
+	
 	$scope.showConversation = function() {
+
+		window.localStorage.chat_use = 'started';
+		$scope.chatLabel = 'Continue Chat';
+
 		console.log('-------> X1');
 		var customMetadata = {"usertype":"paid" , "level":"7" , "score":"12345", "HSTAGSKEY":["ios","phonegap","bug"]};
 		var config = {"enableContactUs":"AFTER_VIEWING_FAQS", "HSCUSTOMMETADATAKEY": customMetadata};
@@ -372,7 +382,7 @@ angular.module('starter.controllers', [])
 					firebase.database().ref('users/' + firebaseUser.uid).set(data);
 
 					// move to new state
-					$state.go('tab.dash');
+					$state.go('tab.chats');
 
 				}, function() {
 

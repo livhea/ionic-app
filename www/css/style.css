@@ -29,3 +29,14 @@
 .item .item-content {
   background-color: #0dbeab !important;
 }
+
+.chat-list {
+    color:white;
+    font-size:larger;
+    margin-left:20px; 
+    margin-top:20px
+}
+
+.chat-list-item {
+    margin:10px 0
+}
