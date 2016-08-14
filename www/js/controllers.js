@@ -79,7 +79,14 @@ angular.module('starter.controllers', [])
 	};
 })
 
-.controller('ChatsCtrl', function($scope, $ionicLoading, $firebaseAuth) {
+.controller('ChatsCtrl', function($scope, $ionicLoading, $ionicPopup, $firebaseAuth) {
+
+	$scope.$on('$ionicView.afterEnter', function(e) {
+  		console.log('AFFAF');
+  		console.log('firebase.auth().currentUser:', firebase.auth().currentUser);
+  	});
+
+
 	if(window.localStorage.chat_use) {
 		$scope.chatLabel = 'Continue Chat';
 	} else {
@@ -105,13 +112,7 @@ angular.module('starter.controllers', [])
 
 			var customMetadata = {};
 			if(snapshot.val()) {
-				customMetadata = {
-					age : snapshot.val().age,
-					pregnant : snapshot.val().pregnant,
-					contact_number : snapshot.val().contact_number,
-					pregnancy_start_date: snapshot.val().pregnancy_start_date,
-					expected_pregnancy_date: snapshot.val().expected_pregnancy_date
-				}
+				console.log('b----->', JSON.stringify(snapshot.val()));
 
 				hipmobData = {
 					'title': 'Coach',
@@ -119,13 +120,29 @@ angular.module('starter.controllers', [])
 					'name': snapshot.val().name,
 					'email': snapshot.val().email
 				};
+
+				hipmobData['customdata'] = {
+					age : snapshot.val().age,
+					pregnant : snapshot.val().pregnant,
+					contact_number : snapshot.val().contact_number,
+					pregnancy_start_date: snapshot.val().pregnancy_start_date,
+					expected_pregnancy_date: snapshot.val().expected_pregnancy_date
+				}
 			}
 
 			$ionicLoading.hide();
 
  			var Hipmob = window.plugins.Hipmob;
-		    Hipmob.openChat('58699d03b20c45cca247352fbd612513', hipmobData, customMetadata);
-			console.log('config', JSON.stringify(config));
+		    Hipmob.openChat('58699d03b20c45cca247352fbd612513', hipmobData, function(){
+		    	// starting chat
+		    	console.log('showed chat');
+		    }, function(){
+		    	//failed to load chat
+				$ionicPopup.alert({
+					title: 'System Error',
+				 	template: 'Sorry, failed to load chat. Please check your internet connection.'
+				});
+		    });
 		});
 		console.log('-------> X5');
 	};
@@ -428,7 +445,7 @@ angular.module('starter.controllers', [])
 			return;
 		}
 
-		if(!isValidPregnancyWeek(this.week_track)) {
+		if((this.pregnancy_status == 'currently_pregnant') && !isValidPregnancyWeek(this.week_track)) {
 			$ionicPopup.alert({
 				title: 'Incorrect weeks',
 			 	template: 'Please check weeks value!'
@@ -465,7 +482,7 @@ function isValidAge(value) {
 }
 
 function isValidPregnancyWeek(value) {
-	return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value >= 0 && value <= 42)
+	return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value >= 0 && value <= 50)
 }
 
 function isValidContactNumber(value) {
