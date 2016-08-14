@@ -92,10 +92,13 @@ angular.module('starter.controllers', [])
 		$scope.chatLabel = 'Continue Chat';
 
 		console.log('-------> X1');
-		var customMetadata = {"usertype":"paid" , "level":"7" , "score":"12345", "HSTAGSKEY":["ios","phonegap","bug"]};
-		var config = {"enableContactUs":"AFTER_VIEWING_FAQS", "HSCUSTOMMETADATAKEY": customMetadata};
-		
 		console.log('-------> X2');
+
+		  var isIOS = ionic.Platform.isIOS();
+		  var isAndroid = ionic.Platform.isAndroid();
+
+
+
 		$ionicLoading.show({
 			template: 'Starting...'
 		});
@@ -120,7 +123,12 @@ angular.module('starter.controllers', [])
 					expected_pregnancy_date: snapshot.val().expected_pregnancy_date
 				}
 
-				config["HSCUSTOMMETADATAKEY"] = customMetadata;
+				if(isIOS) {
+					config["HelpshiftSupportCustomMetadataKey"] = customMetadata;
+				} else {
+					config["HSCUSTOMMETADATAKEY"] = customMetadata;
+				}
+				
 			}
 
 			console.log('config', JSON.stringify(config));
@@ -242,6 +250,7 @@ angular.module('starter.controllers', [])
   	var setHelpshiftInformation = function(name, email) {
 		// set user info for the helpshift
 		window.HelpshiftPlugin.setNameAndEmail(name, email);
+		window.HelpshiftPlugin.setUserIdentifier("APAC-02201-U1");
   	};
 
   	//This method is executed when the user press the "Login with facebook" button
