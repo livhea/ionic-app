@@ -103,6 +103,7 @@ angular.module('starter.controllers', [])
 
 		var userId = firebase.auth().currentUser.uid;
 		firebase.database().ref('users/' + userId).once('value', function(snapshot) {
+
 			console.log('A----->');
 			console.log('snapshot', JSON.stringify(snapshot.val()));
 
@@ -143,6 +144,11 @@ angular.module('starter.controllers', [])
 				 	template: 'Sorry, failed to load chat. Please check your internet connection.'
 				});
 		    });
+		}, function(err) {
+			$ionicPopup.alert({
+				title: 'System Error',
+				 template: 'Failed to load user. Please try again!'
+			});
 		});
 		console.log('-------> X5');
 	};
