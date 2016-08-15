@@ -80,77 +80,48 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ChatsCtrl', function($scope, $ionicLoading, $ionicPopup, $firebaseAuth) {
-
-	$scope.$on('$ionicView.afterEnter', function(e) {
-  		console.log('AFFAF');
-  		console.log('firebase.auth().currentUser:', firebase.auth().currentUser);
-  	});
-
-
 	if(window.localStorage.chat_use) {
 		$scope.chatLabel = 'Continue Chat';
 	} else {
 		$scope.chatLabel = 'Start Chat';
 	}
 	
+	var askPushPermission = function() {
+		var push = new Ionic.Push({
+	    	"debug": true
+	    });
+
+	    push.register(function(token) {
+	    	console.log("Device token:",token.token);
+	    	push.saveToken(token);  // persist the token in the Ionic Platform
+	    	window.Hotline.updateRegistrationToken(token);
+	    	window.Hotline.showConversations();
+	    });
+	};
+
 	$scope.showConversation = function() {
 
-		window.localStorage.chat_use = 'started';
-		$scope.chatLabel = 'Continue Chat';
-		$ionicLoading.show({
-			template: 'Starting...'
-		});
+		if(!window.localStorage.chat_use) {
+			// mark that user has started conversation atleast once
+			window.localStorage.chat_use = 'started';
 
-		var userId = firebase.auth().currentUser.uid;
-		firebase.database().ref('users/' + userId).once('value', function(snapshot) {
+			// change chat label,
+			// label gets changed for first time, when user initiates a chat
+			$scope.chatLabel = 'Continue Chat';
 
-			console.log('A----->');
-			console.log('snapshot', JSON.stringify(snapshot.val()));
 
-			var hipmobData = {
-				'title': 'Coach'
-			};
-
-			var customMetadata = {};
-			if(snapshot.val()) {
-				console.log('b----->', JSON.stringify(snapshot.val()));
-
-				hipmobData = {
-					'title': 'Coach',
-					'user': userId,
-					'name': snapshot.val().name,
-					'email': snapshot.val().email
-				};
-
-				hipmobData['customdata'] = {
-					age : snapshot.val().age,
-					pregnant : snapshot.val().pregnant,
-					contact_number : snapshot.val().contact_number,
-					pregnancy_start_date: snapshot.val().pregnancy_start_date,
-					expected_pregnancy_date: snapshot.val().expected_pregnancy_date
-				}
-			}
-
-			$ionicLoading.hide();
-
- 			var Hipmob = window.plugins.Hipmob;
-		    Hipmob.openChat('58699d03b20c45cca247352fbd612513', hipmobData, function(){
-		    	// starting chat
-		    	console.log('showed chat');
-		    }, function(){
-		    	//failed to load chat
-				$ionicPopup.alert({
-					title: 'System Error',
-				 	template: 'Sorry, failed to load chat. Please check your internet connection.'
-				});
-		    });
-		}, function(err) {
-			$ionicPopup.alert({
-				title: 'System Error',
-				 template: 'Failed to load user. Please try again!'
+			var alertPopup = $ionicPopup.alert({
+				title: 'Allow Notifications',
+			 	template: 'You will be prompted to allow notifications. Please allow that, so your coach can message you, while you are offline.'
 			});
-		});
-		console.log('-------> X5');
+
+			alertPopup.then(function(res) {
+     			askPushPermission();
+   			});
+		} else {
+			// start conversation
+			window.Hotline.showConversations();
+		}		
 	};
 })
 
@@ -209,8 +180,6 @@ angular.module('starter.controllers', [])
 	  	getFacebookProfileInfo(authResponse)
 	  	.then(function(profileInfo) {
 	  		console.log('profileInfo:', profileInfo);
-
-	  		setHelpshiftInformation(profileInfo.name, profileInfo.email);
 		  	// For the purpose of this example I will store user data on local storage
 		 	UserService.setUser({
 			  	authResponse: authResponse,
@@ -260,12 +229,6 @@ angular.module('starter.controllers', [])
 	  		}
 	  	);
 	  	return info.promise;
-  	};
-
-  	var setHelpshiftInformation = function(name, email) {
-		// set user info for the helpshift
-		window.HelpshiftPlugin.setNameAndEmail(name, email);
-		window.HelpshiftPlugin.setUserIdentifier("APAC-02201-U1");
   	};
 
   	//This method is executed when the user press the "Login with facebook" button
@@ -382,28 +345,39 @@ angular.module('starter.controllers', [])
 					console.log('scopeRef.age: ', scopeRef.age);
 					console.log('scopeRef.userOTP: ', JSON.stringify(scopeRef.userOTP));
 					
+					var userName = user.name || '';
+					var userEmail = user.email || '';
+					var userPicture = user.picture || '';
 					// move to next screen
 					var data = {
-						name: user.name || '',
-						email: user.email || '',
-						picture: user.picture || '',
+						name: userName,
+						email: userEmail,
+						picture: userPicture,
 						age: scopeRef.age,
 						pregnant: scopeRef.pregnancy_status,
 						contact_number: scopeRef.contact_number
 					};
 
+					var hotlineCustomData = {
+						age: scopeRef.age,
+						pregnant: scopeRef.pregnancy_status
+					};
+
 					var previousDate = moment().subtract($scope.week_track*7, 'days');
 					previousDate = previousDate.format('LL');
 					console.log('previousDate: ', previousDate);
-					if($scope.pregnancy_status == 'pregnant') {
+					if($scope.pregnancy_status == 'currently_pregnant') {
 						data['pregnancy_start_date'] = previousDate;
-					} else {
-						data['expected_pregnancy_date'] = previousDate;
+						hotlineCustomData['pregnancy_start_date'] = previousDate;
 					}
 
 					var firebaseUser = firebase.auth().currentUser;
 					console.log('firebaseUser:', firebaseUser);
 					firebase.database().ref('users/' + firebaseUser.uid).set(data);
+
+
+					// set hotline information
+					setHotlineUserInfo(userName, userEmail, firebaseUser.uid, scopeRef.contact_number, hotlineCustomData);
 
 					// move to new state
 					$state.go('tab.chats');
@@ -507,4 +481,19 @@ function isUserEqual(facebookAuthResponse, firebaseUser) {
     }
   }
   return false;
+}
+
+// set hotline information
+function setHotlineUserInfo(name, email, firebaseUserId, phoneNumber, customData) {
+	
+	window.Hotline.updateUser({
+		name: 			name,
+		email: 			email,
+		externalId: 	firebaseUserId,
+		countryCode: 	'+91',
+		phoneNumber: 	phoneNumber
+	});
+
+	// set custom user properties
+	window.Hotline.updateUserProperties(customData);
 }

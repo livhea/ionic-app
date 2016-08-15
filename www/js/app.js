@@ -29,18 +29,18 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
             helpshiftAppId = 'livhea_platform_20160727123716116-b102dadbed53db1';
         }
 
-        // Initializing HelpShift sdk
-        var helpshiftConfig = {
-            "disableEntryExitAnimations": "YES", 
-            "requireEmail": "NO",
-            "hideNameAndEmail": "YES",
-            "conversationPrefillText": "Hi Swapnil here, How can I of assistance ?"
-        };
-
-        window.HelpshiftPlugin.install("e86b51fb7b165e636ab022fcbb9e3703", 
-                                        "livhea.helpshift.com", 
-                                        helpshiftAppId, 
-                                        helpshiftConfig);
+        // Initializing Hotline sdk
+        window.Hotline.init({
+            appId                   : "86abb378-eba3-4f5e-b8a1-0ed7881512a5",
+            appKey                  : "e23c6efa-a49e-4dff-8805-f0d255320279",
+            agentAvatarEnabled      : true,
+            cameraCaptureEnabled    : false,
+            voiceMessagingEnabled   : true,
+            pictureMessagingEnabled : true
+        }, function(success){
+            console.log("This is called form the init callback");
+            console.log('hotline sdk initialized');
+        });
 
         facebookConnectPlugin.getLoginStatus(function(success) {
             if(success.status === 'connected') {
