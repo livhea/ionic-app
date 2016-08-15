@@ -32,7 +32,7 @@
     "cordova-plugin-inappbrowser",
     {
       "variables": {
-        "SENDER_ID": "GCM_PROJECT_NUMBER"
+        "SENDER_ID": "211882719686"
       },
       "locator": "phonegap-plugin-push",
       "id": "phonegap-plugin-push"
