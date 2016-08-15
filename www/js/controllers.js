@@ -110,14 +110,20 @@ angular.module('starter.controllers', [])
 			$scope.chatLabel = 'Continue Chat';
 
 
-			var alertPopup = $ionicPopup.alert({
-				title: 'Allow Notifications',
-			 	template: 'You will be prompted to allow notifications. Please allow that, so your coach can message you, while you are offline.'
-			});
+			if(ionic.Platform.isIOS()) {
+				var alertPopup = $ionicPopup.alert({
+					title: 'Allow Notifications',
+				 	template: 'You will be prompted to allow notifications. Please allow that, so your coach can message you, while you are offline.'
+				});
 
-			alertPopup.then(function(res) {
-     			askPushPermission();
-   			});
+				alertPopup.then(function(res) {
+	     			askPushPermission();
+	   			});
+			} else {
+				console.log('-------------------> GOING TO REGISTER FOR ANDROID NOTIFICATION')
+				// start conversation
+				askPushPermission();
+			}
 		} else {
 			// start conversation
 			window.Hotline.showConversations();
