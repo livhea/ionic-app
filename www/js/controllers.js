@@ -281,6 +281,8 @@ angular.module('starter.controllers', [])
 	$scope.retryCount = 0;
 	
 	var sendOTP = function(mobileNumber) {
+		//todo
+		return;
 		if($scope.retryCount > 3) {
 			$ionicPopup.alert({
 				title: 'Excuse us',
@@ -346,7 +348,8 @@ angular.module('starter.controllers', [])
 				console.log('scopeRef.verification', scopeRef.verification);
 				
 				// trigger verify call with server
-				$scope.verification.verify(res, function() {
+				//todo
+				// $scope.verification.verify(res, function() {
 					console.log('successfully verified phone number');
 					console.log('scopeRef.age: ', scopeRef.age);
 					console.log('scopeRef.userOTP: ', JSON.stringify(scopeRef.userOTP));
@@ -388,16 +391,17 @@ angular.module('starter.controllers', [])
 					// move to new state
 					$state.go('tab.chats');
 
-				}, function() {
+				//todo
+				// }, function() {
 
-					scopeRef.retryCount++;
-					console.log('phone number not verified');
-					// show error alert and ask to verify again
-					$ionicPopup.alert({
-						title: 'OTP Error',
-					 	template: 'System failed to verify your phone number. Please try again!'
-					});
-				});
+				// 	scopeRef.retryCount++;
+				// 	console.log('phone number not verified');
+				// 	// show error alert and ask to verify again
+				// 	$ionicPopup.alert({
+				// 		title: 'OTP Error',
+				// 	 	template: 'System failed to verify your phone number. Please try again!'
+				// 	});
+				// });
 			}
 
         }, function(err) {
@@ -434,7 +438,7 @@ angular.module('starter.controllers', [])
 		if((this.pregnancy_status == 'currently_pregnant') && !isValidPregnancyWeek(this.week_track)) {
 			$ionicPopup.alert({
 				title: 'Incorrect weeks',
-			 	template: 'Please check weeks value!'
+			 	template: 'Please enter a pregnancy week between 4 and 42'
 			});
 			return;
 		}
@@ -468,7 +472,7 @@ function isValidAge(value) {
 }
 
 function isValidPregnancyWeek(value) {
-	return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value >= 0 && value <= 50)
+	return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value)) && (value >= 4 && value <= 42)
 }
 
 function isValidContactNumber(value) {
