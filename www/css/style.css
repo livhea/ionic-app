@@ -16,9 +16,9 @@
     color: white;
 }
 
-.item .item-content {
+/*.item .item-content {
   background-color: #0dbeab !important;
-}
+}*/
 
 .chat-list {
     color:white;
@@ -29,4 +29,13 @@
 
 .chat-list-item {
     margin:10px 0
+}
+
+.livhea-long-text {
+    color: white;
+    text-align: left;
+    padding: 10px;
+    font-size:20px;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 140%;
 }

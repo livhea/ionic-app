@@ -54,7 +54,7 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
         .then(function (value) {
             // console.log('-------config 1-->', value);
             if(value) {
-                $state.go('tab.chats');
+                $state.go('app.chats');
             } else {
                 $state.go('launch');
             }
@@ -88,73 +88,92 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
         controller: 'ProfileController'
     })
 
-    // setup an abstract state for the tabs directive
-    .state('tab', {
-        url: '/tab',
+    .state('app', {
+        url: '/app',
         abstract: true,
-        templateUrl: 'templates/tabs.html'
+        templateUrl: 'templates/menu.html',
+        controller: 'AppController'
     })
 
-    // Each tab has its own nav history stack:
-    .state('tab.dash', {
+    .state('app.dash', {
         url: '/dash',
         views: {
-            'tab-dash': {
-                templateUrl: 'templates/tab-dash.html',
+            'menuContent': {
+                templateUrl: 'templates/app-dash.html',
                 controller: 'DashCtrl'
             }
         }
     })
 
-    .state('tab.chats', {
+    .state('app.chats', {
         url: '/chats',
         views: {
-            'tab-chats': {
-                templateUrl: 'templates/tab-chats.html',
+            'menuContent': {
+                templateUrl: 'templates/app-chats.html',
                 controller: 'ChatsCtrl'
             }
         }
     })
 
-    .state('tab.more', {
-        url: '/more',
+    .state('app.blog', {
+        url: '/blog',
         views: {
-            'tab-more': {
-                templateUrl: 'templates/tab-more.html',
-                controller: 'MoreCtrl'
+            'menuContent': {
+                templateUrl: 'templates/app-blog.html',
+                controller: 'BlogController'
             }
         }
     })
 
-    .state('tab.more-detail', {
-        url: '/more/:blogId',
+    .state('app.blog-detail', {
+        url: '/blog/:blogId',
         views: {
-            'tab-more': {
+            'menuContent': {
                 templateUrl: 'templates/blog-detail.html',
                 controller: 'BlogDetailCtrl'
             }
         }
     })
 
-    .state('tab.dash-addweight', {
+    .state('app.contact', {
+        url: '/contact',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/app-contact-us.html',
+                controller: ''
+            }
+        }
+    })
+
+    .state('app.about', {
+        url: '/about',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/app-about-us.html',
+                controller: ''
+            }
+        }
+    })
+    
+    .state('app.dash-addweight', {
         url: '/dash/addweight',
         views: {
-            'tab-dash': {
+            'menuContent': {
                 templateUrl: 'templates/add-weight.html',
                 controller: 'WeightCtrl'
             }
         }
     })
 
-    .state('tab.dash-addbloodpressure', {
+    .state('app.dash-addbloodpressure', {
         url: '/dash/addbloodpressure',
         views: {
-            'tab-dash': {
+            'menuContent': {
                 templateUrl: 'templates/add-bloodpressure.html',
                 controller: 'BloodPressureCtrl'
             }
         }
     });
     // $urlRouterProvider.otherwise('/launchprofile');
-    // $urlRouterProvider.otherwise('/tab/chats');
+    $urlRouterProvider.otherwise('/app/chats');
 });

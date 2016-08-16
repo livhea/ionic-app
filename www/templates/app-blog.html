@@ -1,7 +1,7 @@
-<ion-view view-title="More" class="livhea-background-color">
+<ion-view view-title="Blog" class="livhea-background-color">
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="blog in blogs" type="item-text-wrap" href="#/tab/more/{{blog.id}}" style="color:white">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="blog in blogs" type="item-text-wrap" href="#/app/blog/{{blog.id}}">
         <img ng-src="{{blog.face}}">
         <div class="item-text-wrap">
   		  {{blog.title}}

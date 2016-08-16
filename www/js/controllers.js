@@ -1,5 +1,16 @@
 angular.module('starter.controllers', [])
 
+.controller('AppController', function($scope) {
+	$scope.rateApp = function() {
+		AppRate.preferences.storeAppURL = {
+		  ios: '<my_app_id>', //TODO
+		  android: 'market://details?id=com.livhea.app.android'
+		};
+
+		AppRate.promptForRating();
+	};
+})
+
 .controller('DashCtrl', function($scope) {
     $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
     $scope.series = ['Series A', 'Series B'];
@@ -150,7 +161,7 @@ angular.module('starter.controllers', [])
 	};
 })
 
-.controller('MoreCtrl', function($scope, Blogs) {
+.controller('BlogController', function($scope, Blogs) {
 	$scope.blogs = Blogs.all();
 })
 
