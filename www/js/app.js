@@ -5,8 +5,8 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytics', 'starter.controllers', 'starter.services', 'firebase', 'chart.js', 'angularMoment'])
-.run(function($ionicPlatform, $ionicAnalytics) {
+angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytics', 'starter.controllers', 'starter.services', 'firebase', 'chart.js', 'angularMoment', 'ngCordova.plugins.nativeStorage'])
+.run(function($ionicPlatform, $ionicAnalytics, $cordovaNativeStorage, $state) {
     $ionicPlatform.ready(function() {
 
         // use ionic analytics
@@ -50,6 +50,19 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
             }
         });
 
+        $cordovaNativeStorage.getItem("user_data")
+        .then(function (value) {
+            // console.log('-------config 1-->', value);
+            if(value) {
+                $state.go('tab.chats');
+            } else {
+                $state.go('launch');
+            }
+            
+        }, function (error) {
+            // console.log('-------config error-->', JSON.stringify(error));
+            $state.go('launch');
+        });
     });
 })
 
@@ -141,17 +154,7 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
                 controller: 'BloodPressureCtrl'
             }
         }
-    })
-
-    console.log('window.localStorage.starter_facebook_user -->', window.localStorage.starter_facebook_user);
-    // if none of the above states are matched, use this as the fallback
-    if(window.localStorage.starter_facebook_user) {
-        console.log('111 HERERERE');
-        $urlRouterProvider.otherwise('/tab/dash');
-    } else {
-        console.log('222 HERERERE');
-        $urlRouterProvider.otherwise('/launch');
-    }
+    });
     // $urlRouterProvider.otherwise('/launchprofile');
     // $urlRouterProvider.otherwise('/tab/chats');
 });

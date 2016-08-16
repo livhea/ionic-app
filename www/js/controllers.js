@@ -79,13 +79,20 @@ angular.module('starter.controllers', [])
 	};
 })
 
-.controller('ChatsCtrl', function($scope, $ionicLoading, $ionicPopup, $firebaseAuth) {
-	if(window.localStorage.chat_use) {
-		$scope.chatLabel = 'Continue Chat';
-	} else {
-		$scope.chatLabel = 'Start Chat';
-	}
-	
+.controller('ChatsCtrl', function($scope, $ionicLoading, $ionicPopup, $firebaseAuth, $cordovaNativeStorage) {
+
+	$cordovaNativeStorage.getItem("chat_use")
+    .then(function (value) {
+        if(value) {
+        	$scope.chatLabel = 'Continue Chat';
+        } else {
+        	$scope.chatLabel = 'Start Chat';
+        }
+        
+    }, function (error) {
+        $scope.chatLabel = 'Start Chat';
+    });
+
 	var askPushPermission = function() {
 		var push = new Ionic.Push({
 	    	"debug": true
@@ -99,35 +106,47 @@ angular.module('starter.controllers', [])
 	    });
 	};
 
-	$scope.showConversation = function() {
+	var askPushPermissionAndStartConversation = function() {
+		// mark that user has started conversation atleast once
+		$cordovaNativeStorage.setItem("chat_use", 'started');
 
-		if(!window.localStorage.chat_use) {
-			// mark that user has started conversation atleast once
-			window.localStorage.chat_use = 'started';
-
-			// change chat label,
-			// label gets changed for first time, when user initiates a chat
-			$scope.chatLabel = 'Continue Chat';
+		// change chat label,
+		// label gets changed for first time, when user initiates a chat
+		$scope.chatLabel = 'Continue Chat';
 
 
-			if(ionic.Platform.isIOS()) {
-				var alertPopup = $ionicPopup.alert({
-					title: 'Allow Notifications',
-				 	template: 'You will be prompted to allow notifications. Please allow that, so your coach can message you, while you are offline.'
-				});
+		if(ionic.Platform.isIOS()) {
+			var alertPopup = $ionicPopup.alert({
+				title: 'Allow Notifications',
+			 	template: 'You will be prompted to allow notifications. Please allow that, so your coach can message you, while you are offline.'
+			});
 
-				alertPopup.then(function(res) {
-	     			askPushPermission();
-	   			});
-			} else {
-				console.log('-------------------> GOING TO REGISTER FOR ANDROID NOTIFICATION')
-				// start conversation
-				askPushPermission();
-			}
+			alertPopup.then(function(res) {
+     			askPushPermission();
+   			});
 		} else {
+			console.log('-------------------> GOING TO REGISTER FOR ANDROID NOTIFICATION')
 			// start conversation
-			window.Hotline.showConversations();
-		}		
+			askPushPermission();
+		}
+	};
+
+	$scope.showConversation = function() {
+		$cordovaNativeStorage.getItem("chat_use")
+        .then(function (value) {
+        	console.log('---------> T1 value', value);
+
+        	if(value) {
+				// start conversation
+				window.Hotline.showConversations();
+        	} else {
+        		askPushPermissionAndStartConversation();
+        	}
+
+        }, function (error) {
+            console.log(error);
+            askPushPermissionAndStartConversation();
+        });
 	};
 })
 
@@ -173,13 +192,13 @@ angular.module('starter.controllers', [])
 				        // ...
 			        });
 		      	}
-
 		      	console.log('firebaseUser:', JSON.stringify(firebase.auth().currentUser));
 		    });
-		  } else {
+
+		} else {
 		    // User is signed-out of Facebook.
 		    firebase.auth().signOut();
-		  }
+		}
 
 	  	var authResponse = event.authResponse;
 
@@ -195,9 +214,9 @@ angular.module('starter.controllers', [])
 			  	picture : "https://graph.facebook.com/" + authResponse.userID + "/picture?type=large"
 		  	});
 
-	 		console.log('T!-->window.localStorage.starter_facebook_user', JSON.stringify(window.localStorage.starter_facebook_user));
-		  $ionicLoading.hide();
-		  $state.go('launchprofile');
+		  	$ionicLoading.hide();
+		  	$state.go('launchprofile');
+
 		}, function(fail){
 		  	// Fail get profile info
 			console.log('profile info fail', fail);
@@ -271,14 +290,20 @@ angular.module('starter.controllers', [])
 
 .controller('ProfileController', function($scope, $state, $q, UserService, $ionicLoading, $ionicPopup, $firebaseAuth, moment) {
 	
-	var user = UserService.getUser();
-	console.log('user-->', user);
-	console.log('string user-->', JSON.stringify(user));
 	$scope.pregnancy_status = 'currently_pregnant';
 	$scope.pregnancyWeekLabel = false;
-	$scope.name = user.name || 'user';
 	$scope.userOTP = {};
 	$scope.retryCount = 0;
+	$scope.user = {};
+	$scope.name = '';
+
+	UserService.getUser(function(userObj){
+		// console.log('userObj----------->', JSON.stringify(userObj));
+		$scope.user = userObj
+		$scope.name = userObj.name;
+	}, function(){
+		// console.log('userObj-----------> ERROR');
+	});
 	
 	var sendOTP = function(mobileNumber) {
 		//todo
@@ -354,9 +379,9 @@ angular.module('starter.controllers', [])
 					console.log('scopeRef.age: ', scopeRef.age);
 					console.log('scopeRef.userOTP: ', JSON.stringify(scopeRef.userOTP));
 					
-					var userName = user.name || '';
-					var userEmail = user.email || '';
-					var userPicture = user.picture || '';
+					var userName = $scope.user.name || '';
+					var userEmail = $scope.user.email || '';
+					var userPicture = $scope.user.picture || '';
 					// move to next screen
 					var data = {
 						name: userName,
