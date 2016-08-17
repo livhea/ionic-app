@@ -30,13 +30,6 @@
       "id": "cordova-plugin-facebook4"
     },
     "cordova-plugin-inappbrowser",
-    {
-      "variables": {
-        "SENDER_ID": "211882719686"
-      },
-      "locator": "phonegap-plugin-push",
-      "id": "phonegap-plugin-push"
-    },
     "cordova-plugin-apprate"
   ],
   "cordovaPlatforms": [

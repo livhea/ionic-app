@@ -181,16 +181,8 @@ angular.module('starter.controllers', [])
     });
 
 	var askPushPermission = function() {
-		var push = new Ionic.Push({
-	    	"debug": true
-	    });
-
-	    push.register(function(token) {
-	    	console.log("Device token:",token.token);
-	    	push.saveToken(token);  // persist the token in the Ionic Platform
-	    	window.Hotline.updateRegistrationToken(token);
-	    	window.Hotline.showConversations();
-	    });
+		window.Hotline.registerPushNotification('211882719686')
+    	window.Hotline.showConversations();
 	};
 
 	var askPushPermissionAndStartConversation = function() {
