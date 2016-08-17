@@ -71,4 +71,32 @@ angular.module('starter.services', ['ngCordova.plugins.nativeStorage'])
             return null;
         }
     };
+})
+
+.factory('WeekTrack', function() {
+    var weeks = {
+            '4': {
+                motherText: 'Dear Mom, you have been planning to conceive and have missed your period this week. It’s one of the first signs that you are pregnant. If you are also feeling tenderness in your breasts, that’s another sign that I am on my way! Additionally, your sense of taste and smell would get significantly heightened.',
+                babyText: 'Mom, you and I have now started this incredible journey which will last for the next 8-9 months. I am really happy to be a part of your life and know that you are going to be an incredible mother to me. I am currently a small embryo and I am of the size of a tiny poppy seed. From this week onwards till the 10th week, all my organs will start developing. And you know, some of them will even start functioning pretty well!'
+            },
+
+            '5': {
+                motherText: 'Dear Mom, you have been planning to conceive and have missed your period this week. It’s one of the first signs that you are pregnant. If you are also feeling tenderness in your breasts, that’s another sign that I am on my way! Additionally, your sense of taste and smell would get significantly heightened.',
+                babyText: 'Mom, you and I have now started this incredible journey which will last for the next 8-9 months. I am really happy to be a part of your life and know that you are going to be an incredible mother to me. I am currently a small embryo and I am of the size of a tiny poppy seed. From this week onwards till the 10th week, all my organs will start developing. And you know, some of them will even start functioning pretty well!'                
+            },
+
+            '6': {
+                motherText: 'Dear Mom, you have been planning to conceive and have missed your period this week. It’s one of the first signs that you are pregnant. If you are also feeling tenderness in your breasts, that’s another sign that I am on my way! Additionally, your sense of taste and smell would get significantly heightened.',
+                babyText: 'Mom, you and I have now started this incredible journey which will last for the next 8-9 months. I am really happy to be a part of your life and know that you are going to be an incredible mother to me. I am currently a small embryo and I am of the size of a tiny poppy seed. From this week onwards till the 10th week, all my organs will start developing. And you know, some of them will even start functioning pretty well!'
+            }            
+    };
+
+    return {  
+        getTrackerForWeek: function(weekNumber) {
+            if(weeks[weekNumber]) {
+                return weeks[weekNumber];
+            }
+            return null;
+        }
+    };
 });

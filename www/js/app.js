@@ -115,6 +115,16 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
         }
     })
 
+    .state('app.track', {
+        url: '/track',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/app-track-pregnancy.html',
+                controller: 'WeekTracker'
+            }
+        }
+    })
+
     .state('app.blog', {
         url: '/blog',
         views: {

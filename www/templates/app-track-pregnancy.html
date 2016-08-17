@@ -1,0 +1,32 @@
+<ion-view view-title="Track Pregnancy" class="livhea-background-color">
+    <ion-content>
+        <div class="list">
+            <div class="item">
+                <table style="width:100%;">
+                    <tr>
+                        <td style="text-align:left" ng-click="showPrev()">{{prev_week}}</td>
+                        <td style="text-align:center">{{curr_week}}</td>
+                        <td style="text-align:right" ng-click="showNext()">{{next_week}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="item item-divider">
+                What is happening with your body
+            </div>
+            <div class="item item-text-wrap">
+                {{mother_text}}
+            </div>      
+        </div>
+        <div class="card">
+            <div class="item item-divider">
+                What is happening with your body
+            </div>
+            <div class="item item-text-wrap">
+                {{baby_text}}
+            </div>      
+        </div>
+    </ion-content>
+</ion-view>

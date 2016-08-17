@@ -11,6 +11,71 @@ angular.module('starter.controllers', [])
 	};
 })
 
+.controller('WeekTracker', function($scope, WeekTrack, UserService, moment) {
+
+	$scope.prev_week = '';
+	$scope.curr_week = 7;
+	$scope.next_week = '';
+	$scope.mother_text = '';
+	$scope.baby_text = '';
+
+	var getWeekAndShowData = function() {
+		var data = WeekTrack.getTrackerForWeek(($scope.curr_week).toString());
+		$scope.mother_text = data['motherText'];
+		$scope.baby_text = data['babyText'];
+
+		if($scope.curr_week > 4) {
+        	$scope.prev_week -= 1; 
+        } else {
+        	$scope.prev_week = ''; 
+        }
+
+		if($scope.curr_week < 42 && $scope.curr_week >= 4) {
+        	$scope.next_week += 1;
+        } else {
+        	$scope.next_week = ''; 
+        }
+	};
+
+	$scope.$on('$ionicView.afterEnter', function(e) {
+	  	// get current pregnancy week
+		UserService.getUser(function(userObj){
+			// console.log('userObj----------->', JSON.stringify(userObj));
+			var startDate = userObj['pregnancy_start_date'];
+			if(startDate) {
+				startDate = moment(startDate);
+
+				//get todays date
+	            var today = moment();
+	            $scope.curr_week = today.diff(startDate, 'week');
+	            getWeekAndShowData();
+			}
+
+		}, function(){
+			// console.log('userObj-----------> ERROR');
+			getWeekAndShowData();
+		});
+  	});
+
+  	$scope.showPrev = function(){
+  		console.log('show prev');
+  		if($scope.prev_week == '') {
+  			return;
+  		}
+  		$scope.curr_week -= 1;
+  		getWeekAndShowData();
+  	};
+
+  	$scope.showNext = function(){
+  		console.log('show next');
+  		if($scope.next_week == '') {
+  			return;
+  		}
+  		$scope.curr_week += 1;
+  		getWeekAndShowData();
+  	};
+})
+
 .controller('DashCtrl', function($scope) {
     $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
     $scope.series = ['Series A', 'Series B'];
@@ -409,11 +474,14 @@ angular.module('starter.controllers', [])
 					};
 
 					var previousDate = moment().subtract($scope.week_track*7, 'days');
-					previousDate = previousDate.format('LL');
-					console.log('previousDate: ', previousDate);
+					formattedPreviousDate = previousDate.clone().format('LL');
 					if($scope.pregnancy_status == 'currently_pregnant') {
-						data['pregnancy_start_date'] = previousDate;
-						hotlineCustomData['pregnancy_start_date'] = previousDate;
+						data['pregnancy_start_date'] = formattedPreviousDate;
+						hotlineCustomData['pregnancy_start_date'] = formattedPreviousDate;
+
+						// save pregnancy start date in local data
+						$scope.user['pregnancy_start_date'] = previousDate;
+						UserService.setUser($scope.user);
 					}
 
 					var firebaseUser = firebase.auth().currentUser;
@@ -425,7 +493,7 @@ angular.module('starter.controllers', [])
 					setHotlineUserInfo(userName, userEmail, firebaseUser.uid, scopeRef.contact_number, hotlineCustomData);
 
 					// move to new state
-					$state.go('tab.chats');
+					$state.go('app.chats');
 
 				//todo
 				// }, function() {
