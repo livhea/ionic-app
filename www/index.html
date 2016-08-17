@@ -54,7 +54,7 @@
     
     <script src="js/services.js"></script>
   </head>
-  <body ng-app="starter">
+  <body>
     <!--
       The nav bar that will be updated as we navigate between views.
     -->
@@ -69,4 +69,6 @@
     -->
     <ion-nav-view></ion-nav-view>
   </body>
+
+  <script type="text/javascript"> document.addEventListener('deviceready', function onDeviceReady() { angular.bootstrap(document.querySelector('body'), ['starter']); }, false); </script>
 </html>

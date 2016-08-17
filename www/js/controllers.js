@@ -12,66 +12,77 @@ angular.module('starter.controllers', [])
 })
 
 .controller('WeekTracker', function($scope, WeekTrack, UserService, moment) {
+	
+	var _this = $scope;
+	_this.prev_week = 9;
+	_this.curr_week = 10;
+	_this.next_week = 11;
+	_this.mother_text = '';
+	_this.baby_text = '';
 
-	$scope.prev_week = '';
-	$scope.curr_week = 7;
-	$scope.next_week = '';
-	$scope.mother_text = '';
-	$scope.baby_text = '';
+	var calculateNextAndPrevWeek = function() {
+		_this.prev_week = null;
+		_this.next_week = null;
 
-	var getWeekAndShowData = function() {
-		var data = WeekTrack.getTrackerForWeek(($scope.curr_week).toString());
-		$scope.mother_text = data['motherText'];
-		$scope.baby_text = data['babyText'];
+		console.log('current week --->', _this.curr_week);
+		if(_this.curr_week > 4) {
+			_this.prev_week = _this.curr_week - 1;
+		}
+		if(_this.curr_week < 42) {
+			_this.next_week = _this.curr_week + 1;
+		}
 
-		if($scope.curr_week > 4) {
-        	$scope.prev_week -= 1; 
-        } else {
-        	$scope.prev_week = ''; 
-        }
+		if(_this.curr_week != 4) {
+			_this.prev_week_show = '<Week ' + ("0" + _this.prev_week).slice(-2);
+		}
+		
+		if(_this.curr_week != 42) {
+			_this.next_week_show = 'Week ' + ("0" + _this.next_week).slice(-2) + '>';
+		}
+		
+		_this.curr_week_show = 'Week ' + ("0" + _this.curr_week).slice(-2);
 
-		if($scope.curr_week < 42 && $scope.curr_week >= 4) {
-        	$scope.next_week += 1;
-        } else {
-        	$scope.next_week = ''; 
-        }
 	};
 
-	$scope.$on('$ionicView.afterEnter', function(e) {
-	  	// get current pregnancy week
-		UserService.getUser(function(userObj){
-			// console.log('userObj----------->', JSON.stringify(userObj));
-			var startDate = userObj['pregnancy_start_date'];
-			if(startDate) {
-				startDate = moment(startDate);
+	var getWeekAndShowData = function() {
+		var week = _this.curr_week;
+		var data = WeekTrack.getTrackerForWeek(week.toString());
+		_this.mother_text = data['motherText'];
+		_this.baby_text = data['babyText'];
+	};
 
-				//get todays date
-	            var today = moment();
-	            $scope.curr_week = today.diff(startDate, 'week');
-	            getWeekAndShowData();
-			}
+	UserService.getUser(function(userObj){
+		var startDate = userObj['pregnancy_start_date'];
+		if(startDate) {
+			startDate = moment(startDate);
 
-		}, function(){
-			// console.log('userObj-----------> ERROR');
-			getWeekAndShowData();
-		});
-  	});
+			//get todays date
+            var today = moment();
+            _this.curr_week =  today.diff(startDate, 'week');
+            calculateNextAndPrevWeek();
+            getWeekAndShowData();
+		}
+
+	}, function(){
+		// console.log('userObj-----------> ERROR');
+		getWeekAndShowData();
+	});
 
   	$scope.showPrev = function(){
-  		console.log('show prev');
-  		if($scope.prev_week == '') {
+  		if(_this.prev_week == null) {
   			return;
   		}
-  		$scope.curr_week -= 1;
+  		_this.curr_week -= 1;
+  		calculateNextAndPrevWeek();
   		getWeekAndShowData();
   	};
 
   	$scope.showNext = function(){
-  		console.log('show next');
-  		if($scope.next_week == '') {
+  		if(_this.next_week == null) {
   			return;
   		}
-  		$scope.curr_week += 1;
+  		_this.curr_week += 1;
+  		calculateNextAndPrevWeek();
   		getWeekAndShowData();
   	};
 })
@@ -365,13 +376,15 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ProfileController', function($scope, $state, $q, UserService, $ionicLoading, $ionicPopup, $firebaseAuth, moment) {
-	
+
+	var _this = this;	
 	$scope.pregnancy_status = 'currently_pregnant';
 	$scope.pregnancyWeekLabel = false;
 	$scope.userOTP = {};
 	$scope.retryCount = 0;
 	$scope.user = {};
 	$scope.name = '';
+	$scope.week_track;
 
 	UserService.getUser(function(userObj){
 		// console.log('userObj----------->', JSON.stringify(userObj));
@@ -455,9 +468,9 @@ angular.module('starter.controllers', [])
 					console.log('scopeRef.age: ', scopeRef.age);
 					console.log('scopeRef.userOTP: ', JSON.stringify(scopeRef.userOTP));
 					
-					var userName = $scope.user.name || '';
-					var userEmail = $scope.user.email || '';
-					var userPicture = $scope.user.picture || '';
+					var userName = scopeRef.user.name || '';
+					var userEmail = scopeRef.user.email || '';
+					var userPicture = scopeRef.user.picture || '';
 					// move to next screen
 					var data = {
 						name: userName,
@@ -472,16 +485,17 @@ angular.module('starter.controllers', [])
 						age: scopeRef.age,
 						pregnant: scopeRef.pregnancy_status
 					};
-
-					var previousDate = moment().subtract($scope.week_track*7, 'days');
+					
+					var previousDate = moment().subtract(scopeRef.week_track*7, 'days');
+					console.log('previousDate---------->', previousDate);
 					formattedPreviousDate = previousDate.clone().format('LL');
 					if($scope.pregnancy_status == 'currently_pregnant') {
 						data['pregnancy_start_date'] = formattedPreviousDate;
 						hotlineCustomData['pregnancy_start_date'] = formattedPreviousDate;
 
 						// save pregnancy start date in local data
-						$scope.user['pregnancy_start_date'] = previousDate;
-						UserService.setUser($scope.user);
+						scopeRef.user['pregnancy_start_date'] = previousDate;
+						UserService.setUser(scopeRef.user);
 					}
 
 					var firebaseUser = firebase.auth().currentUser;

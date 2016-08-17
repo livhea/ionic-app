@@ -4,9 +4,11 @@
             <div class="item">
                 <table style="width:100%;">
                     <tr>
-                        <td style="text-align:left" ng-click="showPrev()">{{prev_week}}</td>
-                        <td style="text-align:center">{{curr_week}}</td>
-                        <td style="text-align:right" ng-click="showNext()">{{next_week}}</td>
+                        <td style="text-align:left" ng-if="!prev_week" ng-click="showPrev()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td style="text-align:left" ng-if="prev_week" ng-click="showPrev()">{{prev_week_show}}</td>
+                        <td style="text-align:center">{{curr_week_show}}</td>
+                        <td style="text-align:right" ng-if="!next_week" ng-click="showNext()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td style="text-align:right" ng-if="next_week" ng-click="showNext()">{{next_week_show}}</td>
                     </tr>
                 </table>
             </div>
@@ -22,7 +24,7 @@
         </div>
         <div class="card">
             <div class="item item-divider">
-                What is happening with your body
+                What is happening with your baby
             </div>
             <div class="item item-text-wrap">
                 {{baby_text}}
