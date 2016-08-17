@@ -185,5 +185,5 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
         }
     });
     // $urlRouterProvider.otherwise('/launchprofile');
-    $urlRouterProvider.otherwise('/app/chats');
+    // $urlRouterProvider.otherwise('/app/chats');
 });
