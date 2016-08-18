@@ -22,22 +22,25 @@
           Login
         </ion-item> -->
         <ion-item menu-close href="#/app/chats">
-          Talk to coach
+          Talk to Coach
         </ion-item>
         <ion-item menu-close href="#/app/track">
-          Track Pregnancy
+          Pregnancy Progress
         </ion-item>
         <ion-item menu-close href="#/app/blog">
-          Blog
+          Health Feed
         </ion-item>
-        <ion-item menu-close href="#/app/contact">
-          Contact us
+        <ion-item menu-close ng-click="contactUs()">
+          Contact Us
+        </ion-item>
+        <ion-item menu-close ng-click="feedBack()">
+          Feedback
         </ion-item>
         <ion-item menu-close href="#/app/about">
-          About us
+          About Us
         </ion-item>
         <ion-item menu-close ng-click="rateApp()" class="">
-          Rate app
+          Rate App
         </ion-item>
       </ion-list>
     </ion-content>
