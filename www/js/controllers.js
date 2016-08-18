@@ -9,6 +9,26 @@ angular.module('starter.controllers', [])
 
 		AppRate.promptForRating();
 	};
+
+	$scope.contactUs = function() {
+		cordova.plugins.email.open({
+		    to:      'info@livhea.com',
+		    // cc:      'erika@mustermann.de',
+		    // bcc:     ['john@doe.com', 'jane@doe.com'],
+		    subject: 'Contact Us',
+		    // body:    'How are you? Nice greetings from Leipzig'
+		});
+	};
+
+	$scope.feedBack = function() {
+		cordova.plugins.email.open({
+		    to:      'info@livhea.com',
+		    // cc:      'erika@mustermann.de',
+		    // bcc:     ['john@doe.com', 'jane@doe.com'],
+		    subject: 'Feedback',
+		    // body:    'How are you? Nice greetings from Leipzig'
+		});
+	};
 })
 
 .controller('WeekTracker', function($scope, WeekTrack, UserService, moment) {
