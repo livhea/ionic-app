@@ -423,7 +423,7 @@ angular.module('starter.controllers', [])
 	
 	var sendOTP = function(mobileNumber) {
 		//todo
-		return;
+		// return;
 		if($scope.retryCount > 3) {
 			$ionicPopup.alert({
 				title: 'Excuse us',
@@ -490,7 +490,7 @@ angular.module('starter.controllers', [])
 				
 				// trigger verify call with server
 				//todo
-				// $scope.verification.verify(res, function() {
+				$scope.verification.verify(res, function() {
 					console.log('successfully verified phone number');
 					console.log('scopeRef.age: ', scopeRef.age);
 					console.log('scopeRef.userOTP: ', JSON.stringify(scopeRef.userOTP));
@@ -537,16 +537,16 @@ angular.module('starter.controllers', [])
 					$state.go('app.chats');
 
 				//todo
-				// }, function() {
+				}, function() {
 
-				// 	scopeRef.retryCount++;
-				// 	console.log('phone number not verified');
-				// 	// show error alert and ask to verify again
-				// 	$ionicPopup.alert({
-				// 		title: 'OTP Error',
-				// 	 	template: 'System failed to verify your phone number. Please try again!'
-				// 	});
-				// });
+					scopeRef.retryCount++;
+					console.log('phone number not verified');
+					// show error alert and ask to verify again
+					$ionicPopup.alert({
+						title: 'OTP Error',
+					 	template: 'System failed to verify your phone number. Please try again!'
+					});
+				});
 			}
 
         }, function(err) {
