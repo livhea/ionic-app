@@ -29,6 +29,16 @@ angular.module('starter.controllers', [])
 		    // body:    'How are you? Nice greetings from Leipzig'
 		});
 	};
+
+	$scope.openBlog = function() {
+		var options = {
+		    location: 'yes',
+		    clearcache: 'yes',
+		    toolbar: 'no'
+		};
+
+		cordova.InAppBrowser.open('http://blog.livhea.com', '_blank', options);
+	}
 })
 
 .controller('WeekTracker', function($scope, WeekTrack, UserService, moment) {

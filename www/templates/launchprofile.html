@@ -1,18 +1,18 @@
 <ion-view hide-nav-bar="true">
-  <ion-content class="padding">
+  <ion-content class="padding livhea-background-color">
   <br/>
-	<span><h4>Welcome</h4> <h3>{{name}}</h3>
-  	<p>Thank for choosing Livhea. Please tell us about you, to better serve you!</p>
+	<span><h4 class="livhea-text-color">Welcome</h4> <h3 class="livhea-text-color">{{name}}</h3></span>
+  	<p>Thank for choosing Livhea.</p><p> Please tell us about yourself, to help us serve you better!</p>
 
 	<div class="list">
 
 		<label class="item item-input">
-		    <span class="input-label">My age</span>
+		    <span class="input-label">Age</span>
 		    <input type="tel" placeholder="age in years" ng-model="age">
 		</label>
 
 		<label class="item item-input">
-		    <span class="input-label">Please select</span>
+		    <span class="input-label">Select</span>
 		      <select ng-model="pregnancy_status" ng-change="pregnancyChanged()">
 		      <option value="trying_pregnant">I am trying to get pregnant</option>
 		      <option value="currently_pregnant">I am pregnant</option>
@@ -26,7 +26,7 @@
 		</label>
 
 		<label class="item item-input">
-		    <span class="input-label">My contact number</span>
+		    <span class="input-label">Contact number</span>
 		    <input type="tel" placeholder="10 digit mobile number" ng-model="contact_number">
 		</label>
 
