@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppController', function($scope) {
+.controller('AppController', function($scope, $window) {
 	$scope.rateApp = function() {
 		AppRate.preferences.storeAppURL = {
 		  ios: '<my_app_id>', //TODO
@@ -11,23 +11,28 @@ angular.module('starter.controllers', [])
 	};
 
 	$scope.contactUs = function() {
-		cordova.plugins.email.open({
-		    to:      'info@livhea.com',
-		    // cc:      'erika@mustermann.de',
-		    // bcc:     ['john@doe.com', 'jane@doe.com'],
-		    subject: 'Contact Us',
-		    // body:    'How are you? Nice greetings from Leipzig'
-		});
+
+		 var link = "mailto:info@livhea.com?subject=ContactUs";
+		 $window.location.href = link;
+		// cordova.plugins.email.open({
+		//     to:      'info@livhea.com',
+		//     // cc:      'erika@mustermann.de',
+		//     // bcc:     ['john@doe.com', 'jane@doe.com'],
+		//     subject: 'Contact Us',
+		//     // body:    'How are you? Nice greetings from Leipzig'
+		// });
 	};
 
 	$scope.feedBack = function() {
-		cordova.plugins.email.open({
-		    to:      'info@livhea.com',
-		    // cc:      'erika@mustermann.de',
-		    // bcc:     ['john@doe.com', 'jane@doe.com'],
-		    subject: 'Feedback',
-		    // body:    'How are you? Nice greetings from Leipzig'
-		});
+		var link = "mailto:info@livhea.com?subject=Feedback";
+		$window.location.href = link;
+		// cordova.plugins.email.open({
+		//     to:      'info@livhea.com',
+		//     // cc:      'erika@mustermann.de',
+		//     // bcc:     ['john@doe.com', 'jane@doe.com'],
+		//     subject: 'Feedback',
+		//     // body:    'How are you? Nice greetings from Leipzig'
+		// });
 	};
 
 	$scope.openBlog = function() {
@@ -37,7 +42,7 @@ angular.module('starter.controllers', [])
 		    toolbar: 'no'
 		};
 
-		cordova.InAppBrowser.open('http://blog.livhea.com', '_blank', options);
+		cordova.InAppBrowser.open('http://blog.livhea.com', '_blank', 'location=yes');
 	}
 })
 

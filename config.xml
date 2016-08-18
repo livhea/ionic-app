@@ -9,6 +9,7 @@
     </author>
   <content src="index.html"/>
   <access origin="*"/>
+  <access browserOnly="true" origin="*"/>
   <allow-navigation href="*"/>
   <allow-intent href="mailto:*"/>
   <preference name="webviewbounce" value="false"/>
@@ -91,5 +92,4 @@
   <plugin name="ionic-plugin-keyboard" spec="~2.2.1"/>
   <plugin name="cordova-plugin-nativestorage" spec="~2.0.2"/>
   <plugin name="cordova-plugin-hotline" spec="https://github.com/freshdesk/hotline-phonegap.git"/>
-  <plugin name="cordova-plugin-email-composer" spec="~0.8.3"/>
 </widget>
