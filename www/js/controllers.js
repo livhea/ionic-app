@@ -49,9 +49,9 @@ angular.module('starter.controllers', [])
 .controller('WeekTracker', function($scope, WeekTrack, UserService, moment) {
 	
 	var _this = $scope;
-	_this.prev_week = 9;
-	_this.curr_week = 10;
-	_this.next_week = 11;
+	_this.prev_week = null;
+	_this.curr_week = 4;
+	_this.next_week = 5;
 	_this.mother_text = '';
 	_this.baby_text = '';
 
@@ -88,15 +88,20 @@ angular.module('starter.controllers', [])
 
 	UserService.getUser(function(userObj){
 		var startDate = userObj['pregnancy_start_date'];
+
 		if(startDate) {
+			// if startDate is present, means user is pregnant.
+			// calculate current pregnancy week
+
 			startDate = moment(startDate);
 
 			//get todays date
             var today = moment();
             _this.curr_week =  today.diff(startDate, 'week');
-            calculateNextAndPrevWeek();
-            getWeekAndShowData();
 		}
+
+		calculateNextAndPrevWeek();
+		getWeekAndShowData();
 
 	}, function(){
 		// console.log('userObj-----------> ERROR');
@@ -516,7 +521,7 @@ angular.module('starter.controllers', [])
 					var previousDate = moment().subtract(scopeRef.week_track*7, 'days');
 					console.log('previousDate---------->', previousDate);
 					formattedPreviousDate = previousDate.clone().format('LL');
-					if($scope.pregnancy_status == 'currently_pregnant') {
+					if(scopeRef.pregnancy_status == 'currently_pregnant') {
 						data['pregnancy_start_date'] = formattedPreviousDate;
 						hotlineCustomData['pregnancy_start_date'] = formattedPreviousDate;
 
