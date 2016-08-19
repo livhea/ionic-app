@@ -3,7 +3,7 @@ angular.module('starter.controllers', [])
 .controller('AppController', function($scope, $window) {
 	$scope.rateApp = function() {
 		AppRate.preferences.storeAppURL = {
-		  ios: '<my_app_id>', //TODO
+		  ios: '1145733430',
 		  android: 'market://details?id=com.livhea.app.android'
 		};
 
