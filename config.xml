@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget android-packageName="com.livhea.app.android" id="com.livhea.app.ios" ios-CFBundleIdentifier="com.livhea.app.ios" version="1.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>Livhea</name>
+  <name>LivHea</name>
   <description>
         Your own Health and Wellness experts
     </description>
-  <author email="swapnil_a@outlook.com" href="http://livhea.com/">
-      Swapnil Agarwal
+  <author email="info@livhea.com" href="http://livhea.com/">
+      LivHea
     </author>
   <content src="index.html"/>
   <access origin="*"/>
