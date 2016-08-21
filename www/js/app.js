@@ -92,17 +92,7 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
         url: '/app',
         abstract: true,
         templateUrl: 'templates/menu.html',
-        controller: 'AppController'
-    })
-
-    .state('app.dash', {
-        url: '/dash',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/app-dash.html',
-                controller: 'DashCtrl'
-            }
-        }
+        controller: 'MainAppController'
     })
 
     .state('app.chats', {
@@ -110,7 +100,7 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
         views: {
             'menuContent': {
                 templateUrl: 'templates/app-chats.html',
-                controller: 'ChatsCtrl'
+                controller: 'ChatController'
             }
         }
     })
@@ -120,27 +110,7 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
         views: {
             'menuContent': {
                 templateUrl: 'templates/app-track-pregnancy.html',
-                controller: 'WeekTracker'
-            }
-        }
-    })
-
-    .state('app.blog', {
-        url: '/blog',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/app-blog.html',
-                controller: 'BlogController'
-            }
-        }
-    })
-
-    .state('app.blog-detail', {
-        url: '/blog/:blogId',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/blog-detail.html',
-                controller: 'BlogDetailCtrl'
+                controller: 'WeekTrackController'
             }
         }
     })
@@ -161,26 +131,6 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
             'menuContent': {
                 templateUrl: 'templates/app-about-us.html',
                 controller: ''
-            }
-        }
-    })
-    
-    .state('app.dash-addweight', {
-        url: '/dash/addweight',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/add-weight.html',
-                controller: 'WeightCtrl'
-            }
-        }
-    })
-
-    .state('app.dash-addbloodpressure', {
-        url: '/dash/addbloodpressure',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/add-bloodpressure.html',
-                controller: 'BloodPressureCtrl'
             }
         }
     });
