@@ -4,12 +4,12 @@ angular.module('starter.services', ['ngCordova.plugins.nativeStorage'])
     var setUser = function(user_data) {
         var userData = JSON.stringify(user_data);
 
-        $cordovaNativeStorage.setItem("user_data", userData)
-        .then(function (value) {
-            console.log('-------services 1-->', value);
-        }, function (error) {
-            console.log(error);
-        });
+        $cordovaNativeStorage.setItem("user_data", userData);
+        // .then(function (value) {
+        //     console.log('-------services 1-->', value);
+        // }, function (error) {
+        //     console.log(error);
+        // });
     };
 
     var getUser = function(successCB, errorCB){

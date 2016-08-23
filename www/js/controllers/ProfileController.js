@@ -19,9 +19,54 @@ angular.module('starter.controllers')
 		// console.log('userObj-----------> ERROR');
 	});
 	
+	var saveInfoAndShowNextView = function(scopeRef) {
+		var scopeObj = scopeRef;
+		var userName = scopeObj.user.name || '';
+		var userEmail = scopeObj.user.email || '';
+		var userPicture = scopeObj.user.picture || '';
+
+		var data = {
+			name: userName,
+			email: userEmail,
+			picture: userPicture,
+			age: scopeObj.age,
+			pregnant: scopeObj.pregnancy_status,
+			contact_number: scopeObj.contact_number
+		};
+
+		var hotlineCustomData = {
+			age: scopeObj.age,
+			pregnant: scopeObj.pregnancy_status
+		};
+		
+		var previousDate = moment().subtract(scopeObj.week_track*7, 'days');
+		console.log('previousDate---------->', previousDate);
+		formattedPreviousDate = previousDate.clone().format('LL');
+		if(scopeObj.pregnancy_status == 'currently_pregnant') {
+			data['pregnancy_start_date'] = formattedPreviousDate;
+			hotlineCustomData['pregnancy_start_date'] = formattedPreviousDate;
+
+			// save pregnancy start date in local data
+			scopeObj.user['pregnancy_start_date'] = previousDate;
+			UserService.setUser(scopeObj.user);
+		}
+
+		var firebaseUser = firebase.auth().currentUser;
+		console.log('firebaseUser:', firebaseUser);
+		firebase.database().ref('users/' + firebaseUser.uid).set(data);
+
+		// set hotline information
+		setHotlineUserInfo(userName, userEmail, firebaseUser.uid, scopeObj.contact_number, hotlineCustomData);
+
+		// move to new state
+		$state.go('app.chats');
+	};
+
 	var sendOTP = function(mobileNumber) {
-		//todo
-		// return;
+		if(mobileNumber == '1234512345') {
+			return;
+		}
+
 		if($scope.retryCount > 3) {
 			$ionicPopup.alert({
 				title: 'Excuse us',
@@ -42,7 +87,7 @@ angular.module('starter.controllers')
 			 	template: 'Failed to send SMS, please retry!'
 			});
 		});
-	}
+	};
 
 	var showOTPpopUp = function(scopeRef) {
 
@@ -86,65 +131,28 @@ angular.module('starter.controllers')
 			if(!isNaN(res)) {
 				console.log('scopeRef.verification', scopeRef.verification);
 				
-				// trigger verify call with server
-				//todo
-				$scope.verification.verify(res, function() {
-					console.log('successfully verified phone number');
-					console.log('scopeRef.age: ', scopeRef.age);
-					console.log('scopeRef.userOTP: ', JSON.stringify(scopeRef.userOTP));
-					
-					var userName = scopeRef.user.name || '';
-					var userEmail = scopeRef.user.email || '';
-					var userPicture = scopeRef.user.picture || '';
-					// move to next screen
-					var data = {
-						name: userName,
-						email: userEmail,
-						picture: userPicture,
-						age: scopeRef.age,
-						pregnant: scopeRef.pregnancy_status,
-						contact_number: scopeRef.contact_number
-					};
+				if(!window.livheaDebug) {
+					console.log('--------------------> L1');
+					// trigger verify call with server
+					$scope.verification.verify(res, function() {
+						saveInfoAndShowNextView(scopeRef);
 
-					var hotlineCustomData = {
-						age: scopeRef.age,
-						pregnant: scopeRef.pregnancy_status
-					};
-					
-					var previousDate = moment().subtract(scopeRef.week_track*7, 'days');
-					console.log('previousDate---------->', previousDate);
-					formattedPreviousDate = previousDate.clone().format('LL');
-					if(scopeRef.pregnancy_status == 'currently_pregnant') {
-						data['pregnancy_start_date'] = formattedPreviousDate;
-						hotlineCustomData['pregnancy_start_date'] = formattedPreviousDate;
+					}, function() {
 
-						// save pregnancy start date in local data
-						scopeRef.user['pregnancy_start_date'] = previousDate;
-						UserService.setUser(scopeRef.user);
-					}
-
-					var firebaseUser = firebase.auth().currentUser;
-					console.log('firebaseUser:', firebaseUser);
-					firebase.database().ref('users/' + firebaseUser.uid).set(data);
-
-
-					// set hotline information
-					setHotlineUserInfo(userName, userEmail, firebaseUser.uid, scopeRef.contact_number, hotlineCustomData);
-
-					// move to new state
-					$state.go('app.chats');
-
-				//todo
-				}, function() {
-
-					scopeRef.retryCount++;
-					console.log('phone number not verified');
-					// show error alert and ask to verify again
-					$ionicPopup.alert({
-						title: 'OTP Error',
-					 	template: 'System failed to verify your phone number. Please try again!'
+						scopeRef.retryCount++;
+						console.log('phone number not verified');
+						// show error alert and ask to verify again
+						$ionicPopup.alert({
+							title: 'OTP Error',
+						 	template: 'System failed to verify your phone number. Please try again!'
+						});
 					});
-				});
+				} else {
+					console.log('--------------------> L2');
+					console.log('Did that---------------->');
+					saveInfoAndShowNextView(scopeRef);
+				}
+
 			}
 
         }, function(err) {
