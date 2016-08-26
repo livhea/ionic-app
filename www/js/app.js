@@ -21,7 +21,7 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
             StatusBar.styleDefault();
         }
 
-        window.livheaDebug = true;
+        window.livheaDebug = false;
         if(!window.livheaDebug) {
             console.log('-----------> LIVE');
             // use ionic analytics
