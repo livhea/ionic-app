@@ -52,6 +52,10 @@ function isValidContactNumber(value) {
 	return !isNaN(value) && (value.match(/\d/g).length===10);
 }
 
+function isValidName(value) {
+	return isNaN(value) && (value.length >= 2);
+}
+
 function isUserEqual(facebookAuthResponse, firebaseUser) {
   if (firebaseUser) {
     var providerData = firebaseUser.providerData;
@@ -67,18 +71,37 @@ function isUserEqual(facebookAuthResponse, firebaseUser) {
 }
 
 // set hotline information
-function setHotlineUserInfo(name, email, firebaseUserId, phoneNumber, customData) {
-	
+function setHotlineUserInfo(name, email, phoneNumber, customData) {
 	window.Hotline.updateUser({
 		name: 			name,
 		email: 			email,
-		externalId: 	firebaseUserId,
 		countryCode: 	'+91',
 		phoneNumber: 	phoneNumber
 	});
 
 	// set custom user properties
 	window.Hotline.updateUserProperties(customData);
+}
+
+function setDataFromFirebaseUser(UserService) {
+
+	firebase.auth().onAuthStateChanged(function(firebaseUser) {
+	  if (firebaseUser) {
+	    // User is signed in.
+	    console.log('A------1');
+
+	    // save user data in firebase
+	    UserService.getUser(function(user){
+	    	// console.log('user--------->', JSON.stringify(user));
+	    	firebase.database().ref('users/' + firebaseUser.uid).set(user);
+	    });
+		
+		// set external id in hotline
+	    window.Hotline.updateUser({
+			externalId: firebaseUser.uid
+		});
+	  }
+	});
 }
 
 /*

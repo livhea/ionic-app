@@ -44,10 +44,11 @@ angular.module('starter.controllers')
 		var startDate = userObj['pregnancy_start_date'];
 
 		if(startDate) {
+			// console.log('startDate--------->', startDate);
 			// if startDate is present, means user is pregnant.
 			// calculate current pregnancy week
 
-			startDate = moment(startDate);
+			startDate = moment(startDate, 'LL');
 
 			//get todays date
             var today = moment();

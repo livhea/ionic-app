@@ -6,7 +6,7 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytics', 'starter.controllers', 'starter.services', 'firebase', 'chart.js', 'angularMoment', 'ngCordova.plugins.nativeStorage'])
-.run(function($ionicPlatform, $ionicAnalytics, $cordovaNativeStorage, $state) {
+.run(function($ionicPlatform, $ionicAnalytics, $cordovaNativeStorage, $state, $ionicPopup) {
     $ionicPlatform.ready(function() {
 
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -21,9 +21,9 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
             StatusBar.styleDefault();
         }
 
-        window.livheaDebug = false;
+        window.livheaDebug = true;
         if(!window.livheaDebug) {
-            console.log('-----------> K1');
+            console.log('-----------> LIVE');
             // use ionic analytics
             $ionicAnalytics.register();
 
@@ -40,7 +40,13 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
                 console.log('hotline sdk initialized');
             });
         } else {
-            console.log('-----------> K2');
+            console.log('-----------> DEBUG');
+
+            $ionicPopup.alert({
+                title: 'Test build',
+                template: 'This is a debug/test build.'
+            });
+
             // Initializing Hotline sdk
             window.Hotline.init({
                 appId                   : "49f9934d-2dec-452d-b606-fd5823fc08ba",
@@ -54,14 +60,6 @@ angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytic
                 console.log('hotline sdk initialized');
             });
         }
-
-        facebookConnectPlugin.getLoginStatus(function(success) {
-            if(success.status === 'connected') {
-                console.log('CONNECTED');
-            } else {
-                console.log('NOT CONNECTED');
-            }
-        });
 
         $cordovaNativeStorage.getItem("user_data")
         .then(function (value) {

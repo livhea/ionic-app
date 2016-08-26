@@ -10,33 +10,18 @@ angular.module('starter.controllers')
 	$scope.user = {};
 	$scope.name = '';
 	$scope.week_track;
-
-	UserService.getUser(function(userObj){
-		// console.log('userObj----------->', JSON.stringify(userObj));
-		$scope.user = userObj
-		$scope.name = userObj.name;
-	}, function(){
-		// console.log('userObj-----------> ERROR');
-	});
 	
 	var saveInfoAndShowNextView = function(scopeRef) {
 		var scopeObj = scopeRef;
-		var userName = scopeObj.user.name || '';
-		var userEmail = scopeObj.user.email || '';
-		var userPicture = scopeObj.user.picture || '';
+		var userName = scopeObj.name || '';
+		var userEmail = scopeObj.contact_number + '@livhea.com';
 
 		var data = {
 			name: userName,
 			email: userEmail,
-			picture: userPicture,
 			age: scopeObj.age,
 			pregnant: scopeObj.pregnancy_status,
 			contact_number: scopeObj.contact_number
-		};
-
-		var hotlineCustomData = {
-			age: scopeObj.age,
-			pregnant: scopeObj.pregnancy_status
 		};
 		
 		var previousDate = moment().subtract(scopeObj.week_track*7, 'days');
@@ -44,19 +29,28 @@ angular.module('starter.controllers')
 		formattedPreviousDate = previousDate.clone().format('LL');
 		if(scopeObj.pregnancy_status == 'currently_pregnant') {
 			data['pregnancy_start_date'] = formattedPreviousDate;
-			hotlineCustomData['pregnancy_start_date'] = formattedPreviousDate;
-
-			// save pregnancy start date in local data
-			scopeObj.user['pregnancy_start_date'] = previousDate;
-			UserService.setUser(scopeObj.user);
 		}
 
-		var firebaseUser = firebase.auth().currentUser;
-		console.log('firebaseUser:', firebaseUser);
-		firebase.database().ref('users/' + firebaseUser.uid).set(data);
+		// save user locally
+		UserService.setUser(data);
 
 		// set hotline information
-		setHotlineUserInfo(userName, userEmail, firebaseUser.uid, scopeObj.contact_number, hotlineCustomData);
+		setHotlineUserInfo(userName, userEmail, scopeObj.contact_number, data);
+
+		// set auth state change & set info
+		setDataFromFirebaseUser(UserService);
+
+		// create user in firebase
+		var password = 'livhea@password';
+		firebase.auth().createUserWithEmailAndPassword(userEmail, password)
+		.catch(function(error) {
+			// Handle Errors here.
+		  	var errorCode = error.code;
+		  	var errorMessage = error.message;
+		  	console.log('errorMessage:', errorMessage);
+		  	console.log('errorCode:', errorCode);
+		  	firebase.auth().signInWithEmailAndPassword(userEmail, password);
+		});
 
 		// move to new state
 		$state.go('app.chats');
@@ -198,6 +192,15 @@ angular.module('starter.controllers')
 			$ionicPopup.alert({
 				title: 'Incorrect contact',
 			 	template: 'Please check your mobile number!'
+			});
+			return;
+		}
+
+		this.name = this.name.trim();
+		if(!isValidName(this.name)) {
+			$ionicPopup.alert({
+				title: 'Incorrect name',
+			 	template: 'Please check your name!'
 			});
 			return;
 		}

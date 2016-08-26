@@ -1,10 +1,15 @@
 <ion-view hide-nav-bar="true">
   <ion-content class="padding livhea-background-color">
   <br/>
-	<span><h4 class="livhea-text-color">Welcome</h4> <h3 class="livhea-text-color">{{name}}</h3></span>
+	<!-- <span><h4 class="livhea-text-color">Welcome</h4> <h3 class="livhea-text-color">{{name}}</h3></span> -->
   	<p>Thank for choosing Livhea.</p><p> Please tell us about yourself, to help us serve you better!</p>
 
 	<div class="list">
+
+		<label class="item item-input">
+		    <span class="input-label">Name</span>
+		    <input type="tel" placeholder="your name" ng-model="name">
+		</label>
 
 		<label class="item item-input">
 		    <span class="input-label">Age</span>
